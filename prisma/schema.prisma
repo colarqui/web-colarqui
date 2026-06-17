@@ -1,0 +1,108 @@
+// Prisma schema - Colegios Arquidiocesanos
+// Base de datos: SQLite (archivo local) para desarrollo
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Colegio {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  nombre          String
+  descripcion     String
+  direccion       String
+  zona            String
+  telefono        String
+  email           String
+  facebook        String?
+  calendario      String   // "A" | "B"
+  jornadas        String   // JSON array
+  niveles         String   // JSON array
+  estudiantes     Int      @default(0)
+  docentes        Int      @default(0)
+  fundacion       Int      @default(2000)
+  egresados       Int?
+  caracteristicas String   // JSON array
+  logo            String?
+  publicado       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Noticia {
+  id         String   @id @default(cuid())
+  slug       String   @unique
+  titulo     String
+  resumen    String
+  contenido  String
+  categoria  String
+  fecha      DateTime
+  autor      String
+  imagen     String
+  destacada  Boolean  @default(false)
+  publicada  Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ColegioDetalle {
+  id           String   @id @default(cuid())
+  colegioSlug  String   @unique
+
+  ofertaTitulo String   @default("Nuestra Oferta Académica")
+  ofertaCopy   String   @default("")
+  ofertaItems  String   @default("[]") // JSON: [{icono,titulo,descripcion?}]
+
+  equipo           String   @default("[]") // JSON: [{nombre,cargo,foto?}]
+  testimonios      String   @default("[]") // JSON: [{texto,nombre,relacion,foto?,video?}]
+  testimoniosVideo String   @default("[]") // JSON: [{titulo?,autor?,url,tipo:"url"|"local"}]
+  galeria          String   @default("[]") // JSON: [{url,alt?}]
+  costos       String   @default("[]") // JSON: [{grado,matricula,pension}] — Cal B only
+
+  heroFondo        String   @default("")
+  heroOverlay      Int      @default(80)
+  heroOverlayColor String   @default("#000000")
+  heroContenedor   String   @default("")
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ComentarioInforme {
+  id         String   @id @default(cuid())
+  fundacion  String   // "FESIH" | "FAUU"
+  anio       Int
+  nombre     String
+  comentario String
+  createdAt  DateTime @default(now())
+}
+
+model Documento {
+  id          String   @id @default(cuid())
+  titulo      String
+  descripcion String?
+  categoria   String   @default("General")
+  nombreArchivo String
+  rutaArchivo   String  // Ruta relativa en /uploads
+  tamano      Int      // bytes
+  contenido   String   // Texto extraído del PDF para RAG
+  paginas     Int      @default(0)
+  activo      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

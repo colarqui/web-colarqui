@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-gray-900 antialiased;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-dark px-6 py-3 rounded-xl font-semibold hover:bg-brand-gold/90 transition-all hover:scale-105;
+  }
+  
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 bg-white text-brand-dark border border-gray-200 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50 transition-all;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
