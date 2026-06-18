@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { deepseekChat, ChatMessage } from "@/lib/deepseek";
 import { buildSaraSystemPrompt } from "@/lib/sara-context";
 
@@ -54,6 +55,41 @@ async function sendToCRM(
   }
 }
 
+async function saveSaraMessage(
+  senderId: string,
+  role: "user" | "assistant",
+  content: string,
+  source?: string,
+  metadata?: { name?: string; email?: string; phone?: string }
+) {
+  try {
+    const conversation = await prisma.saraConversation.upsert({
+      where: { senderId },
+      create: {
+        senderId,
+        name: metadata?.name || null,
+        email: metadata?.email || null,
+        phone: metadata?.phone || null,
+      },
+      update: {
+        ...(metadata?.name ? { name: metadata.name } : {}),
+        ...(metadata?.email ? { email: metadata.email } : {}),
+        ...(metadata?.phone ? { phone: metadata.phone } : {}),
+      },
+    });
+    await prisma.saraMessage.create({
+      data: {
+        conversationId: conversation.id,
+        role,
+        content,
+        source: source || null,
+      },
+    });
+  } catch (err) {
+    console.error("Error saving Sara message:", err);
+  }
+}
+
 async function localSaraReply(
   message: string,
   history?: ChatMessage[]
@@ -94,6 +130,9 @@ export async function POST(request: Request) {
     // Generate a stable senderId if not provided
     const stableSenderId = senderId || `web-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
+    // Save user message
+    await saveSaraMessage(stableSenderId, "user", message.trim(), undefined, { name, email, phone });
+
     // 1. Escalation to CRM (user clicked "Talk to advisor")
     if (escalate && CRM_WEBCHAT_URL) {
       const crmResponse = await sendToCRM(
@@ -106,6 +145,7 @@ export async function POST(request: Request) {
       );
 
       if (crmResponse && crmResponse.response) {
+        await saveSaraMessage(stableSenderId, "assistant", crmResponse.response, "crm");
         return NextResponse.json({
           reply: crmResponse.response,
           source: "crm",
@@ -120,6 +160,7 @@ export async function POST(request: Request) {
 
     // 2. Default: always use local DeepSeek + context
     const reply = await localSaraReply(message.trim(), history);
+    await saveSaraMessage(stableSenderId, "assistant", reply, "local");
     return NextResponse.json({ reply, source: "local" });
   } catch (e: unknown) {
     console.error("Sara API error:", e);
