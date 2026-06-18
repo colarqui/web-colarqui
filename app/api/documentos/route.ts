@@ -57,8 +57,11 @@ export async function POST(request: Request) {
       });
 
     if (upError) {
-      console.error("Supabase upload error:", upError);
-      return NextResponse.json({ error: "Error al subir documento al almacenamiento" }, { status: 500 });
+      console.error("Supabase upload error:", upError.message, upError.name, upError.cause);
+      return NextResponse.json(
+        { error: "Error al subir documento al almacenamiento", detail: upError.message },
+        { status: 500 }
+      );
     }
 
     // Extraer texto con pdf-parse

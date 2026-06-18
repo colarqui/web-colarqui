@@ -13,7 +13,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     if (!supabaseUrl) {
       return NextResponse.json({ error: "Configuración de almacenamiento incompleta" }, { status: 500 });
     }
-    const publicUrl = `${supabaseUrl}/storage/v1/object/public/${encodeURIComponent(doc.rutaArchivo)}`;
+    const publicUrl = `${supabaseUrl}/storage/v1/object/public/documents/${doc.rutaArchivo}`;
     return NextResponse.redirect(publicUrl, 302);
   } catch {
     return NextResponse.json({ error: "Archivo no disponible" }, { status: 404 });
