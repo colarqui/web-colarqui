@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Trash2, Loader2 } from "lucide-react";
+import { Save, Trash2, Loader2, ImagePlus, Eye, EyeOff, Bold, Italic, Heading, List, Link2 } from "lucide-react";
 
 type Noticia = {
   id?: string;
@@ -25,6 +25,9 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
+  const [imageUploading, setImageUploading] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [form, setForm] = useState<Noticia>({
     id: initial?.id,
     slug: initial?.slug || "",
@@ -42,6 +45,54 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
   function update<K extends keyof Noticia>(key: K, value: Noticia[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
+
+  const insertAtCursor = useCallback((text: string) => {
+    const ta = textareaRef.current;
+    if (!ta) return;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const before = ta.value.slice(0, start);
+    const after = ta.value.slice(end);
+    const newValue = before + text + after;
+    update("contenido", newValue);
+    setTimeout(() => {
+      ta.selectionStart = ta.selectionEnd = start + text.length;
+      ta.focus();
+    }, 0);
+  }, [form.contenido]);
+
+  const handleImageUpload = useCallback(async (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    setImageUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error subiendo imagen");
+      const imgHtml = `<img src="${data.url}" width="400" style="max-width:100%;height:auto;display:block;margin:1rem 0;border-radius:0.5rem;" />\n`;
+      insertAtCursor(imgHtml);
+    } catch (e: any) {
+      setError(e.message || "Error subiendo imagen");
+    } finally {
+      setImageUploading(false);
+    }
+  }, [insertAtCursor]);
+
+  const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const files = Array.from(e.clipboardData.files);
+    const imageFile = files.find((f) => f.type.startsWith("image/"));
+    if (imageFile) {
+      e.preventDefault();
+      await handleImageUpload(imageFile);
+    }
+  }, [handleImageUpload]);
+
+  const handleImageInput = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) await handleImageUpload(file);
+    e.target.value = "";
+  }, [handleImageUpload]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -111,13 +162,99 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
         </Field>
 
         <Field label="Contenido (Markdown)">
-          <textarea
-            value={form.contenido}
-            onChange={(e) => update("contenido", e.target.value)}
-            required
-            rows={14}
-            className="input font-mono text-sm"
-          />
+          <div className="border border-gray-200 rounded-xl overflow-hidden">
+            {/* Toolbar */}
+            <div className="flex items-center gap-1 px-3 py-2 bg-gray-50 border-b border-gray-200">
+              <button
+                type="button"
+                onClick={() => insertAtCursor("**texto**")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Negrita"
+              >
+                <Bold className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => insertAtCursor("*texto*")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Cursiva"
+              >
+                <Italic className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => insertAtCursor("## Título\n")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Título"
+              >
+                <Heading className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => insertAtCursor("- item\n")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Lista"
+              >
+                <List className="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                onClick={() => insertAtCursor("[texto](https://url.com)")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Link"
+              >
+                <Link2 className="h-4 w-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-300 mx-1" />
+              <label className="p-1.5 rounded hover:bg-gray-200 text-gray-600 cursor-pointer relative">
+                <ImagePlus className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageInput}
+                  disabled={imageUploading}
+                />
+              </label>
+              <div className="flex-1" />
+              <button
+                type="button"
+                onClick={() => setShowPreview((p) => !p)}
+                className="flex items-center gap-1 text-xs text-gray-500 hover:text-brand-dark px-2 py-1 rounded hover:bg-gray-200"
+              >
+                {showPreview ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                {showPreview ? "Editar" : "Vista previa"}
+              </button>
+            </div>
+
+            {imageUploading && (
+              <div className="px-3 py-1.5 bg-amber-50 text-amber-700 text-xs flex items-center gap-2">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Subiendo imagen…
+              </div>
+            )}
+
+            {showPreview ? (
+              <div
+                className="p-4 prose prose-sm max-w-none bg-white min-h-[320px]"
+                dangerouslySetInnerHTML={{ __html: markdownToHtml(form.contenido) }}
+              />
+            ) : (
+              <textarea
+                ref={textareaRef}
+                value={form.contenido}
+                onChange={(e) => update("contenido", e.target.value)}
+                onPaste={handlePaste}
+                required
+                rows={14}
+                className="w-full px-4 py-3 text-sm font-mono bg-white focus:outline-none resize-y min-h-[320px]"
+                placeholder="Escribe el contenido en Markdown. También puedes pegar imágenes directamente aquí."
+              />
+            )}
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
+            Pega imágenes directamente (Ctrl+V) o usa el botón de imagen. Para redimensionar, cambia el número en {"width=\"400\""} del código HTML.
+          </p>
         </Field>
 
         <div className="grid md:grid-cols-3 gap-4">
@@ -226,6 +363,28 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
       `}</style>
     </form>
   );
+}
+
+function markdownToHtml(md: string): string {
+  return md
+    // Code blocks
+    .replace(/```([\s\S]*?)```/g, '<pre class="bg-gray-100 p-3 rounded-lg overflow-x-auto text-xs my-2"><code>$1</code></pre>')
+    // Headings
+    .replace(/^### (.*$)/gim, '<h3 class="text-lg font-bold mt-4 mb-2">$1</h3>')
+    .replace(/^## (.*$)/gim, '<h2 class="text-xl font-bold mt-5 mb-2">$1</h2>')
+    .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-bold mt-6 mb-3">$1</h1>')
+    // Bold
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    // Italic
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">$1</a>')
+    // Lists
+    .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc">$1</li>')
+    // Images
+    .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-lg my-2 max-w-full h-auto" />')
+    // Paragraphs (must be last)
+    .split('\n\n').map(p => p.trim() ? `<p class="mb-2 leading-relaxed">${p.replace(/\n/g, '<br/>')}</p>` : '').join('\n');
 }
 
 function Field({
