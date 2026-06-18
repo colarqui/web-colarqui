@@ -1,10 +1,37 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { MessageCircle, Send, X, ChevronRight, Loader2 } from "lucide-react";
+import { MessageCircle, Send, X, ChevronRight, Loader2, User } from "lucide-react";
 import Image from "next/image";
 
 type Msg = { role: "user" | "assistant"; content: string };
+
+const SENDER_ID_KEY = "sara_sender_id";
+const USER_DATA_KEY = "sara_user_data";
+
+function getOrCreateSenderId(): string {
+  if (typeof window === "undefined") return "";
+  let id = localStorage.getItem(SENDER_ID_KEY);
+  if (!id) {
+    id = `web-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+    localStorage.setItem(SENDER_ID_KEY, id);
+  }
+  return id;
+}
+
+function getStoredUserData(): { name: string; email: string; phone: string } {
+  if (typeof window === "undefined") return { name: "", email: "", phone: "" };
+  try {
+    const stored = localStorage.getItem(USER_DATA_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  return { name: "", email: "", phone: "" };
+}
+
+function saveUserData(data: { name: string; email: string; phone: string }) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(USER_DATA_KEY, JSON.stringify(data));
+}
 
 // Lightweight markdown renderer: bold, URLs, line breaks
 function renderContent(text: string) {
@@ -64,7 +91,10 @@ export default function ChatIA() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showContactForm, setShowContactForm] = useState(false);
+  const [userData, setUserData] = useState(() => getStoredUserData());
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const senderId = useRef<string>("");
 
   // Restore history from localStorage
   useEffect(() => {
@@ -112,18 +142,27 @@ export default function ChatIA() {
     setLoading(true);
 
     try {
-      // Send full history (excluding welcome) as context
-      const history = newMessages.slice(1, -1); // exclude welcome + last user msg
+      if (!senderId.current) senderId.current = getOrCreateSenderId();
+
+      const history = newMessages.slice(1, -1);
       const res = await fetch("/api/sara", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: trimmed, history }),
+        body: JSON.stringify({
+          message: trimmed,
+          history,
+          senderId: senderId.current,
+          name: userData.name || undefined,
+          email: userData.email || undefined,
+          phone: userData.phone || undefined,
+        }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al contactar a Sara");
 
-      setMessages((prev) => [...prev, { role: "assistant", content: data.reply }]);
+      const prefix = data.source === "crm" ? "" : "";
+      setMessages((prev) => [...prev, { role: "assistant", content: prefix + data.reply }]);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Error de conexión";
       setError(msg);
@@ -137,6 +176,56 @@ export default function ChatIA() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleEscalateToCRM = async () => {
+    if (!senderId.current) senderId.current = getOrCreateSenderId();
+    if (!userData.name.trim()) {
+      setShowContactForm(true);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const history = messages.slice(1).map((m) => ({ role: m.role, content: m.content }));
+      const res = await fetch("/api/sara", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: "El usuario solicita hablar con un asesor.",
+          history,
+          senderId: senderId.current,
+          name: userData.name,
+          email: userData.email || undefined,
+          phone: userData.phone || undefined,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Error al contactar al CRM");
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: data.reply || "Te he conectado con un asesor. En breve te contactarán.",
+        },
+      ]);
+      setShowContactForm(false);
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : "Error de conexión";
+      setError(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveContact = () => {
+    saveUserData(userData);
+    setShowContactForm(false);
+    handleEscalateToCRM();
   };
 
   const handleClearHistory = () => {
@@ -240,6 +329,49 @@ export default function ChatIA() {
             </div>
           )}
 
+          {/* Contact form */}
+          {showContactForm && (
+            <div className="px-4 py-3 bg-amber-50 border-t border-amber-100 space-y-2">
+              <div className="text-xs text-amber-800 font-medium">Déjanos tus datos para que un asesor te contacte:</div>
+              <input
+                type="text"
+                placeholder="Nombre completo *"
+                value={userData.name}
+                onChange={(e) => setUserData((p) => ({ ...p, name: e.target.value }))}
+                className="w-full px-3 py-1.5 bg-white rounded-lg text-sm border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              />
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={userData.email}
+                onChange={(e) => setUserData((p) => ({ ...p, email: e.target.value }))}
+                className="w-full px-3 py-1.5 bg-white rounded-lg text-sm border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              />
+              <input
+                type="tel"
+                placeholder="Teléfono"
+                value={userData.phone}
+                onChange={(e) => setUserData((p) => ({ ...p, phone: e.target.value }))}
+                className="w-full px-3 py-1.5 bg-white rounded-lg text-sm border border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-300"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSaveContact}
+                  disabled={!userData.name.trim() || loading}
+                  className="flex-1 px-3 py-1.5 bg-brand-dark text-white text-sm rounded-lg hover:bg-brand-dark/90 transition-colors disabled:opacity-40"
+                >
+                  {loading ? "Enviando..." : "Solicitar contacto"}
+                </button>
+                <button
+                  onClick={() => setShowContactForm(false)}
+                  className="px-3 py-1.5 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Error */}
           {error && (
             <div className="px-4 py-2 bg-red-50 border-t border-red-100 text-xs text-red-600">
@@ -248,7 +380,7 @@ export default function ChatIA() {
           )}
 
           {/* Input */}
-          <div className="p-4 bg-white border-t">
+          <div className="p-4 bg-white border-t space-y-2">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -268,6 +400,22 @@ export default function ChatIA() {
                 {loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Send className="h-4 w-4" aria-hidden="true" />}
               </button>
             </div>
+            {!showContactForm && messages.length > 2 && (
+              <button
+                onClick={() => {
+                  if (!userData.name.trim()) {
+                    setShowContactForm(true);
+                  } else {
+                    handleEscalateToCRM();
+                  }
+                }}
+                disabled={loading}
+                className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-brand-dark bg-brand-gold/10 hover:bg-brand-gold/20 rounded-lg transition-colors border border-brand-gold/30 disabled:opacity-40"
+              >
+                <User className="h-3 w-3" />
+                Hablar con un asesor
+              </button>
+            )}
           </div>
         </div>
       )}
