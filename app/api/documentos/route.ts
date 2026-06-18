@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/auth";
+import { getSession, can } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,6 +29,9 @@ export async function GET() {
 export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!can(session, "documentos", "crear")) {
+    return NextResponse.json({ error: "Sin permiso para crear documentos" }, { status: 403 });
+  }
 
   try {
     const formData = await request.formData();

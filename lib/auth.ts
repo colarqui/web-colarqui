@@ -69,4 +69,11 @@ export async function getSession(): Promise<SessionPayload | null> {
   return verifyToken(token);
 }
 
+export function can(session: SessionPayload | null, modulo: keyof Permisos, accion: string): boolean {
+  if (!session) return false;
+  if (session.role === "admin") return true;
+  const p = session.permisos?.[modulo] as Record<string, boolean> | undefined;
+  return !!p?.[accion];
+}
+
 export const SESSION_COOKIE_NAME = COOKIE_NAME;

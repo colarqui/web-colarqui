@@ -15,6 +15,13 @@ type Doc = {
   createdAt: string;
 };
 
+type SessionUser = {
+  role: string;
+  permisos: {
+    documentos?: { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
+  };
+};
+
 const CATEGORIAS = ["General", "Admisiones", "Reglamento", "Académico", "Transparencia", "Pastoral"];
 
 function formatBytes(bytes: number): string {
@@ -28,12 +35,24 @@ export default function DocumentosManager() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [session, setSession] = useState<SessionUser | null>(null);
   const [form, setForm] = useState({
     titulo: "",
     descripcion: "",
     categoria: "General",
     file: null as File | null,
   });
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.json())
+      .then((data) => setSession(data.user))
+      .catch(() => {});
+  }, []);
+
+  const canCrear = session?.role === "admin" || !!session?.permisos?.documentos?.crear;
+  const canPublicar = session?.role === "admin" || !!session?.permisos?.documentos?.publicar;
+  const canEliminar = session?.role === "admin" || !!session?.permisos?.documentos?.eliminar;
 
   async function loadDocs() {
     setLoading(true);
@@ -98,6 +117,7 @@ export default function DocumentosManager() {
   return (
     <div className="space-y-8">
       {/* Upload */}
+      {canCrear && (
       <form onSubmit={handleUpload} className="bg-white p-6 rounded-2xl border border-gray-100">
         <h2 className="font-bold text-brand-dark mb-4 flex items-center gap-2">
           <Upload className="h-5 w-5" /> Subir nuevo documento
@@ -166,6 +186,7 @@ export default function DocumentosManager() {
           {uploading ? "Procesando PDF..." : "Subir documento"}
         </button>
       </form>
+      )}
 
       {/* Lista */}
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
@@ -210,6 +231,7 @@ export default function DocumentosManager() {
                   <td className="px-4 py-3 text-sm text-gray-600">{doc.paginas}</td>
                   <td className="px-4 py-3 text-sm text-gray-600">{formatBytes(doc.tamano)}</td>
                   <td className="px-4 py-3">
+                    {canPublicar && (
                     <button
                       onClick={() => toggleActive(doc)}
                       className={`inline-flex items-center gap-1 text-xs px-2 py-1 rounded ${
@@ -226,6 +248,7 @@ export default function DocumentosManager() {
                         </>
                       )}
                     </button>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-right space-x-2">
                     <a
@@ -236,12 +259,14 @@ export default function DocumentosManager() {
                     >
                       <Download className="h-3.5 w-3.5" />
                     </a>
+                    {canEliminar && (
                     <button
                       onClick={() => handleDelete(doc.id)}
                       className="inline-flex items-center gap-1 text-red-600 hover:bg-red-50 px-2 py-1 rounded text-sm"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                     </button>
+                    )}
                   </td>
                 </tr>
               ))}

@@ -41,7 +41,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background image */}
       <img
-        src="/images/bg_admin.JPG"
+        src="/images/bg_admin.jpg"
         alt=""
         className="absolute inset-0 w-full h-full object-cover"
       />

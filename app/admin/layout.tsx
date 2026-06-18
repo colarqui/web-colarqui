@@ -12,6 +12,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
               email: session.email,
               displayName: session.displayName,
               role: session.role,
+              permisos: session.permisos,
             }
           : null
       }

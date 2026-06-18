@@ -5,7 +5,18 @@ import { usePathname } from "next/navigation";
 import { LayoutDashboard, Newspaper, School, FileText, LogOut, Users, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-type Session = { name: string; email: string; displayName: string; role: string } | null;
+type PermisosModulo = { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
+type Session = {
+  name: string;
+  email: string;
+  displayName: string;
+  role: string;
+  permisos: {
+    noticias?: PermisosModulo;
+    colegios?: PermisosModulo;
+    documentos?: PermisosModulo;
+  };
+} | null;
 
 export default function AdminShell({
   children,
@@ -39,13 +50,27 @@ export default function AdminShell({
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
-          <NavLink href="/admin" exact pathname={pathname} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
-          <NavLink href="/admin/noticias" pathname={pathname} icon={<Newspaper className="h-4 w-4" />} label="Noticias" />
-          <NavLink href="/admin/colegios" pathname={pathname} icon={<School className="h-4 w-4" />} label="Colegios" />
-          <NavLink href="/admin/documentos" pathname={pathname} icon={<FileText className="h-4 w-4" />} label="Documentos PDF" />
-          {session?.role === "admin" && (
-            <NavLink href="/admin/usuarios" pathname={pathname} icon={<Users className="h-4 w-4" />} label="Usuarios" />
-          )}
+          {(() => {
+            const hasAny = (m?: PermisosModulo) =>
+              session?.role === "admin" || !!m?.crear || !!m?.editar || !!m?.publicar || !!m?.eliminar;
+            return (
+              <>
+                <NavLink href="/admin" exact pathname={pathname} icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
+                {hasAny(session?.permisos?.noticias) && (
+                  <NavLink href="/admin/noticias" pathname={pathname} icon={<Newspaper className="h-4 w-4" />} label="Noticias" />
+                )}
+                {hasAny(session?.permisos?.colegios) && (
+                  <NavLink href="/admin/colegios" pathname={pathname} icon={<School className="h-4 w-4" />} label="Colegios" />
+                )}
+                {hasAny(session?.permisos?.documentos) && (
+                  <NavLink href="/admin/documentos" pathname={pathname} icon={<FileText className="h-4 w-4" />} label="Documentos PDF" />
+                )}
+                {session?.role === "admin" && (
+                  <NavLink href="/admin/usuarios" pathname={pathname} icon={<Users className="h-4 w-4" />} label="Usuarios" />
+                )}
+              </>
+            );
+          })()}
         </nav>
 
         <div className="p-4 border-t border-white/10">

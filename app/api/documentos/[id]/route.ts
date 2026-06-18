@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/auth";
+import { getSession, can } from "@/lib/auth";
 import { supabase } from "@/lib/supabase";
 
 export const runtime = "nodejs";
@@ -8,6 +8,9 @@ export const runtime = "nodejs";
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!can(session, "documentos", "publicar")) {
+    return NextResponse.json({ error: "Sin permiso para modificar documentos" }, { status: 403 });
+  }
 
   const { id } = await params;
   const body = await request.json();
@@ -40,6 +43,9 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+  if (!can(session, "documentos", "eliminar")) {
+    return NextResponse.json({ error: "Sin permiso para eliminar documentos" }, { status: 403 });
+  }
 
   const { id } = await params;
   const doc = await prisma.documento.findUnique({ where: { id } });
