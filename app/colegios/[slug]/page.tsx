@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { getColegioBySlug, getColegios, getColegioDetalle } from "@/lib/models";
+import { getColegioBySlug, getColegioDetalle } from "@/lib/models";
 import GalleryLightbox from "@/components/GalleryLightbox";
 import CostosAccordion from "@/components/CostosAccordion";
 import BeneficiosDescuentos from "@/components/BeneficiosDescuentos";
@@ -60,11 +60,6 @@ function getYouTubeEmbedUrl(url: string): string | null {
 
 interface PageProps {
   params: Promise<{ slug: string }>;
-}
-
-export async function generateStaticParams() {
-  const colegios = await getColegios();
-  return colegios.map((colegio) => ({ slug: colegio.slug }));
 }
 
 const COP = new Intl.NumberFormat("es-CO", { style: "currency", currency: "COP", maximumFractionDigits: 0 });
