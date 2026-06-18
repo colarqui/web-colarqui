@@ -68,7 +68,8 @@ export default function DocumentosManager() {
     const res = await fetch("/api/documentos", { method: "POST", body: fd });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error || "Error al subir");
+      const detail = data.detail ? ` (${data.detail})` : "";
+      setError((data.error || "Error al subir") + detail);
       setUploading(false);
       return;
     }
