@@ -92,6 +92,7 @@ export default function ChatIA() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showEscalateButton, setShowEscalateButton] = useState(false);
   const [userData, setUserData] = useState(() => getStoredUserData());
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const senderId = useRef<string>("");
@@ -161,8 +162,9 @@ export default function ChatIA() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error al contactar a Sara");
 
-      const prefix = data.source === "crm" ? "" : "";
-      setMessages((prev) => [...prev, { role: "assistant", content: prefix + data.reply }]);
+      const replyText: string = data.reply || "";
+      setShowEscalateButton(needsEscalation(replyText));
+      setMessages((prev) => [...prev, { role: "assistant", content: replyText }]);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Error de conexión";
       setError(msg);
@@ -176,6 +178,25 @@ export default function ChatIA() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const needsEscalation = (reply: string): boolean => {
+    const lower = reply.toLowerCase();
+    const phrases = [
+      "no la tengo disponible",
+      "no tengo esa información",
+      "no tengo disponible",
+      "no está en mi base de conocimiento",
+      "no puedo resolver",
+      "no sé",
+      "no conozco",
+      "no tengo información",
+      "conectar con un asesor",
+      "hablar con un asesor",
+      "contactar a un asesor",
+      "asesor del equipo de mercadeo",
+    ];
+    return phrases.some((p) => lower.includes(p));
   };
 
   const handleEscalateToCRM = async () => {
@@ -200,6 +221,7 @@ export default function ChatIA() {
           name: userData.name,
           email: userData.email || undefined,
           phone: userData.phone || undefined,
+          escalate: true,
         }),
       });
 
@@ -410,10 +432,14 @@ export default function ChatIA() {
                   }
                 }}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-1.5 text-xs text-brand-dark bg-brand-gold/10 hover:bg-brand-gold/20 rounded-lg transition-colors border border-brand-gold/30 disabled:opacity-40"
+                className={`w-full flex items-center justify-center gap-2 py-1.5 text-xs rounded-lg transition-colors border disabled:opacity-40 ${
+                  showEscalateButton
+                    ? "bg-brand-gold text-brand-dark hover:bg-brand-gold/90 border-brand-gold font-semibold animate-pulse"
+                    : "text-brand-dark bg-brand-gold/10 hover:bg-brand-gold/20 border-brand-gold/30"
+                }`}
               >
                 <User className="h-3 w-3" />
-                Hablar con un asesor
+                {showEscalateButton ? "💬 Hablar con un asesor" : "Hablar con un asesor"}
               </button>
             )}
           </div>

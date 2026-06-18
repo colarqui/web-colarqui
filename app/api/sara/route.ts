@@ -75,7 +75,7 @@ async function localSaraReply(
 
 export async function POST(request: Request) {
   try {
-    const { message, history, senderId, name, email, phone, colegioId, forceLocal } =
+    const { message, history, senderId, name, email, phone, colegioId, escalate } =
       (await request.json()) as {
         message: string;
         history?: ChatMessage[];
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
         email?: string;
         phone?: string;
         colegioId?: string;
-        forceLocal?: boolean;
+        escalate?: boolean;
       };
 
     if (!message || typeof message !== "string" || !message.trim()) {
@@ -94,8 +94,8 @@ export async function POST(request: Request) {
     // Generate a stable senderId if not provided
     const stableSenderId = senderId || `web-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 
-    // Try CRM first unless forceLocal is set
-    if (CRM_WEBCHAT_URL && !forceLocal) {
+    // 1. Escalation to CRM (user clicked "Talk to advisor")
+    if (escalate && CRM_WEBCHAT_URL) {
       const crmResponse = await sendToCRM(
         message.trim(),
         stableSenderId,
@@ -105,31 +105,20 @@ export async function POST(request: Request) {
         colegioId
       );
 
-      if (crmResponse) {
-        if (crmResponse.status === "bot_inactive") {
-          // CRM bot is inactive, fallback to local Sara
-          const reply = await localSaraReply(message.trim(), history);
-          return NextResponse.json({
-            reply,
-            source: "local",
-            crmStatus: "bot_inactive",
-            leadId: crmResponse.leadId,
-          });
-        }
-
-        if (crmResponse.response) {
-          return NextResponse.json({
-            reply: crmResponse.response,
-            source: "crm",
-            leadId: crmResponse.leadId,
-            shouldBookAppointment: crmResponse.shouldBookAppointment,
-            actions: crmResponse.actions,
-          });
-        }
+      if (crmResponse && crmResponse.response) {
+        return NextResponse.json({
+          reply: crmResponse.response,
+          source: "crm",
+          leadId: crmResponse.leadId,
+          shouldBookAppointment: crmResponse.shouldBookAppointment,
+          actions: crmResponse.actions,
+        });
       }
+
+      // If CRM fails, fall through to local reply
     }
 
-    // Fallback: use local DeepSeek / context
+    // 2. Default: always use local DeepSeek + context
     const reply = await localSaraReply(message.trim(), history);
     return NextResponse.json({ reply, source: "local" });
   } catch (e: unknown) {
