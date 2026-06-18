@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Trash2, Loader2, ImagePlus, Eye, EyeOff, Bold, Italic, Heading, List, Link2 } from "lucide-react";
+import { Save, Trash2, Loader2, ImagePlus, Eye, EyeOff, Bold, Italic, Heading, List, Link2, Quote, Minus, AlignLeft, AlignCenter, AlignRight, Hash, Code, Maximize2, X } from "lucide-react";
 
 type Noticia = {
   id?: string;
@@ -27,6 +27,10 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
   const [error, setError] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [pendingImageUrl, setPendingImageUrl] = useState("");
+  const [imageSize, setImageSize] = useState("mediana");
+  const [imageAlign, setImageAlign] = useState("centro");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [form, setForm] = useState<Noticia>({
     id: initial?.id,
@@ -61,6 +65,25 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
     }, 0);
   }, [form.contenido]);
 
+  const insertImageWithOptions = useCallback((url: string, size: string, align: string) => {
+    const widths: Record<string, string> = {
+      pequena: "300",
+      mediana: "600",
+      grande: "900",
+      completa: "100%",
+    };
+    const aligns: Record<string, string> = {
+      izquierda: "margin: 1rem 1rem 1rem 0; float: left;",
+      centro: "margin: 1rem auto; display: block;",
+      derecha: "margin: 1rem 0 1rem 1rem; float: right;",
+    };
+    const width = widths[size] || "600";
+    const style = aligns[align] || aligns.centro;
+    const clearfix = align !== "centro" ? "\n<div style=\"clear: both;\"></div>\n" : "\n";
+    const imgHtml = `<img src="${url}" width="${width}" style="max-width:100%;height:auto;border-radius:0.5rem;${style}" />${clearfix}`;
+    insertAtCursor(imgHtml);
+  }, [insertAtCursor]);
+
   const handleImageUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) return;
     setImageUploading(true);
@@ -70,14 +93,16 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Error subiendo imagen");
-      const imgHtml = `<img src="${data.url}" width="400" style="max-width:100%;height:auto;display:block;margin:1rem 0;border-radius:0.5rem;" />\n`;
-      insertAtCursor(imgHtml);
+      setPendingImageUrl(data.url);
+      setImageSize("mediana");
+      setImageAlign("centro");
+      setShowImageModal(true);
     } catch (e: any) {
       setError(e.message || "Error subiendo imagen");
     } finally {
       setImageUploading(false);
     }
-  }, [insertAtCursor]);
+  }, []);
 
   const handlePaste = useCallback(async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
     const files = Array.from(e.clipboardData.files);
@@ -161,62 +186,57 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
           />
         </Field>
 
-        <Field label="Contenido (Markdown)">
+        <Field label="Contenido">
           <div className="border border-gray-200 rounded-xl overflow-hidden">
             {/* Toolbar */}
-            <div className="flex items-center gap-1 px-3 py-2 bg-gray-50 border-b border-gray-200">
-              <button
-                type="button"
-                onClick={() => insertAtCursor("**texto**")}
-                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
-                title="Negrita"
-              >
+            <div className="flex items-center gap-0.5 px-2 py-1.5 bg-gray-50 border-b border-gray-200 flex-wrap">
+              <button type="button" onClick={() => insertAtCursor("**texto**")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Negrita">
                 <Bold className="h-4 w-4" />
               </button>
-              <button
-                type="button"
-                onClick={() => insertAtCursor("*texto*")}
-                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
-                title="Cursiva"
-              >
+              <button type="button" onClick={() => insertAtCursor("*texto*")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Cursiva">
                 <Italic className="h-4 w-4" />
               </button>
-              <button
-                type="button"
-                onClick={() => insertAtCursor("## Título\n")}
-                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
-                title="Título"
-              >
+              <div className="w-px h-5 bg-gray-300 mx-0.5" />
+              <button type="button" onClick={() => insertAtCursor("## Título\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Título grande">
                 <Heading className="h-4 w-4" />
               </button>
-              <button
-                type="button"
-                onClick={() => insertAtCursor("- item\n")}
-                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
-                title="Lista"
-              >
+              <button type="button" onClick={() => insertAtCursor("### Subtítulo\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Subtítulo">
+                <Hash className="h-4 w-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-300 mx-0.5" />
+              <button type="button" onClick={() => insertAtCursor("- item\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Lista con viñetas">
                 <List className="h-4 w-4" />
               </button>
-              <button
-                type="button"
-                onClick={() => insertAtCursor("[texto](https://url.com)")}
-                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
-                title="Link"
-              >
+              <button type="button" onClick={() => insertAtCursor("1. item\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Lista numerada">
+                <AlignLeft className="h-4 w-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-300 mx-0.5" />
+              <button type="button" onClick={() => insertAtCursor("\n> Cita destacada\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Cita / Destacado">
+                <Quote className="h-4 w-4" />
+              </button>
+              <button type="button" onClick={() => insertAtCursor("[texto](https://url.com)")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Link / Enlace">
                 <Link2 className="h-4 w-4" />
               </button>
-              <div className="w-px h-5 bg-gray-300 mx-1" />
-              <label className="p-1.5 rounded hover:bg-gray-200 text-gray-600 cursor-pointer relative">
+              <button type="button" onClick={() => insertAtCursor("`código`")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Código">
+                <Code className="h-4 w-4" />
+              </button>
+              <button type="button" onClick={() => insertAtCursor("\n---\n")} className="p-1.5 rounded hover:bg-gray-200 text-gray-600" title="Línea divisoria">
+                <Minus className="h-4 w-4" />
+              </button>
+              <div className="w-px h-5 bg-gray-300 mx-0.5" />
+              <button
+                type="button"
+                onClick={() => insertAtCursor("\n| Columna 1 | Columna 2 |\n| --- | --- |\n| Dato 1 | Dato 2 |\n")}
+                className="p-1.5 rounded hover:bg-gray-200 text-gray-600"
+                title="Tabla"
+              >
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+              </button>
+              <label className="p-1.5 rounded hover:bg-gray-200 text-gray-600 cursor-pointer relative" title="Insertar imagen">
                 <ImagePlus className="h-4 w-4" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageInput}
-                  disabled={imageUploading}
-                />
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageInput} disabled={imageUploading} />
               </label>
-              <div className="flex-1" />
+              <div className="flex-1 min-w-[4px]" />
               <button
                 type="button"
                 onClick={() => setShowPreview((p) => !p)}
@@ -248,14 +268,107 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
                 required
                 rows={14}
                 className="w-full px-4 py-3 text-sm font-mono bg-white focus:outline-none resize-y min-h-[320px]"
-                placeholder="Escribe el contenido en Markdown. También puedes pegar imágenes directamente aquí."
+                placeholder="Escribe aquí el contenido de la noticia. Puedes usar las herramientas de arriba o pegar imágenes directamente (Ctrl+V)."
               />
             )}
           </div>
           <p className="text-xs text-gray-400 mt-1">
-            Pega imágenes directamente (Ctrl+V) o usa el botón de imagen. Para redimensionar, cambia el número en {"width=\"400\""} del código HTML.
+            💡 Pega imágenes directamente (Ctrl+V) o usa el botón de imagen. Cuando subas una imagen, podrás elegir el tamaño y la alineación.
           </p>
         </Field>
+
+        {/* Modal de configuración de imagen */}
+        {showImageModal && pendingImageUrl && (
+          <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-brand-dark">Configurar imagen</h3>
+                <button
+                  type="button"
+                  onClick={() => { setShowImageModal(false); setPendingImageUrl(""); }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+              <img src={pendingImageUrl} alt="Preview" className="w-full max-h-48 object-contain rounded-lg border mb-4" />
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Tamaño</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      { key: "pequena", label: "Pequeña", desc: "300px" },
+                      { key: "mediana", label: "Mediana", desc: "600px" },
+                      { key: "grande", label: "Grande", desc: "900px" },
+                      { key: "completa", label: "Ancho completo", desc: "100%" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setImageSize(opt.key)}
+                        className={`p-2 rounded-lg border text-sm text-left transition-colors ${
+                          imageSize === opt.key
+                            ? "border-brand-gold bg-brand-gold/10 text-brand-dark font-medium"
+                            : "border-gray-200 hover:bg-gray-50 text-gray-600"
+                        }`}
+                      >
+                        {opt.label}
+                        <span className="block text-xs text-gray-400">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Alineación</label>
+                  <div className="flex gap-2">
+                    {[
+                      { key: "izquierda", label: "Izquierda", icon: AlignLeft },
+                      { key: "centro", label: "Centro", icon: AlignCenter },
+                      { key: "derecha", label: "Derecha", icon: AlignRight },
+                    ].map((opt) => (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => setImageAlign(opt.key)}
+                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border text-sm transition-colors ${
+                          imageAlign === opt.key
+                            ? "border-brand-gold bg-brand-gold/10 text-brand-dark font-medium"
+                            : "border-gray-200 hover:bg-gray-50 text-gray-600"
+                        }`}
+                      >
+                        <opt.icon className="h-4 w-4" />
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => { setShowImageModal(false); setPendingImageUrl(""); }}
+                    className="flex-1 py-2 text-sm text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      insertImageWithOptions(pendingImageUrl, imageSize, imageAlign);
+                      setShowImageModal(false);
+                      setPendingImageUrl("");
+                    }}
+                    className="flex-1 py-2 text-sm text-brand-dark bg-brand-gold hover:bg-brand-gold/90 rounded-lg font-medium"
+                  >
+                    Insertar imagen
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-3 gap-4">
           <Field label="Categoría">
