@@ -4,7 +4,18 @@ import AdminShell from "./AdminShell";
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await getSession();
   return (
-    <AdminShell session={session ? { name: session.name, email: session.email } : null}>
+    <AdminShell
+      session={
+        session
+          ? {
+              name: session.name,
+              email: session.email,
+              displayName: session.displayName,
+              role: session.role,
+            }
+          : null
+      }
+    >
       {children}
     </AdminShell>
   );

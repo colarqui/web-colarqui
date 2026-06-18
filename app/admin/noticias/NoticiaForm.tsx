@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Save, Trash2, Loader2, ImagePlus, Eye, EyeOff, Bold, Italic, Heading, List, Link2, Quote, Minus, AlignLeft, AlignCenter, AlignRight, Hash, Code, Maximize2, X } from "lucide-react";
 
@@ -40,11 +40,25 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
     contenido: initial?.contenido || "",
     categoria: initial?.categoria || "Institucional",
     fecha: initial?.fecha ? new Date(initial.fecha).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-    autor: initial?.autor || "Oficina de Comunicaciones",
+    autor: initial?.autor || "",
     imagen: initial?.imagen || "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
     destacada: initial?.destacada ?? false,
     publicada: initial?.publicada ?? true,
   });
+
+  // Cargar autor desde la sesión del usuario cuando se crea una noticia nueva
+  useEffect(() => {
+    if (!initial?.id) {
+      fetch("/api/auth/me")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user?.displayName) {
+            setForm((prev) => ({ ...prev, autor: data.user.displayName }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [initial?.id]);
 
   function update<K extends keyof Noticia>(key: K, value: Noticia[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -392,7 +406,7 @@ export default function NoticiaForm({ initial }: { initial?: Partial<Noticia> })
               className="input"
             />
           </Field>
-          <Field label="Autor">
+          <Field label="Autor" hint="Se completa automáticamente con el nombre del usuario conectado">
             <input
               type="text"
               value={form.autor}

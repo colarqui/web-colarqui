@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Newspaper, School, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, Newspaper, School, FileText, LogOut, Users, UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-type Session = { name: string; email: string } | null;
+type Session = { name: string; email: string; displayName: string; role: string } | null;
 
 export default function AdminShell({
   children,
@@ -43,15 +43,29 @@ export default function AdminShell({
           <NavLink href="/admin/noticias" pathname={pathname} icon={<Newspaper className="h-4 w-4" />} label="Noticias" />
           <NavLink href="/admin/colegios" pathname={pathname} icon={<School className="h-4 w-4" />} label="Colegios" />
           <NavLink href="/admin/documentos" pathname={pathname} icon={<FileText className="h-4 w-4" />} label="Documentos PDF" />
+          {session?.role === "admin" && (
+            <NavLink href="/admin/usuarios" pathname={pathname} icon={<Users className="h-4 w-4" />} label="Usuarios" />
+          )}
         </nav>
 
         <div className="p-4 border-t border-white/10">
           {session && (
             <div className="mb-3">
-              <div className="text-sm font-semibold">{session.name}</div>
+              <div className="text-sm font-semibold">{session.displayName || session.name}</div>
               <div className="text-xs text-gray-400 truncate">{session.email}</div>
             </div>
           )}
+          <Link
+            href="/admin/perfil"
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors mb-2 ${
+              pathname === "/admin/perfil"
+                ? "bg-brand-gold text-brand-dark font-semibold"
+                : "text-gray-300 hover:bg-white/10 hover:text-white"
+            }`}
+          >
+            <UserCircle className="h-4 w-4" />
+            Mi perfil
+          </Link>
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg text-sm transition-colors"

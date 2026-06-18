@@ -6,11 +6,19 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me-please-change
 const SECRET_KEY = new TextEncoder().encode(JWT_SECRET);
 const COOKIE_NAME = "ca_admin_session";
 
+export type Permisos = {
+  noticias?: { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
+  colegios?: { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
+  documentos?: { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
+};
+
 export type SessionPayload = {
   userId: string;
   email: string;
   name: string;
+  displayName: string;
   role: string;
+  permisos: Permisos;
 };
 
 export async function hashPassword(password: string) {

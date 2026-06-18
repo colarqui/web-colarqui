@@ -4,13 +4,23 @@ import { verifyPassword, createToken, setSessionCookie } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
-    const { email, password } = await request.json();
-    if (!email || !password) {
-      return NextResponse.json({ error: "Email y contraseña son requeridos" }, { status: 400 });
+    const { username, email, password } = await request.json();
+    const login = (username || email || "").trim().toLowerCase();
+    if (!login || !password) {
+      return NextResponse.json({ error: "Usuario y contraseña son requeridos" }, { status: 400 });
     }
 
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
+    // Buscar por username o email
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { username: login },
+          { email: login },
+        ],
+      },
+    });
+
+    if (!user || !user.activo) {
       return NextResponse.json({ error: "Credenciales inválidas" }, { status: 401 });
     }
 
@@ -19,16 +29,32 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Credenciales inválidas" }, { status: 401 });
     }
 
+    let permisos = {};
+    try {
+      permisos = JSON.parse(user.permisos || "{}");
+    } catch {
+      permisos = {};
+    }
+
     const token = await createToken({
       userId: user.id,
       email: user.email,
       name: user.name,
+      displayName: user.displayName || user.name,
       role: user.role,
+      permisos,
     });
     await setSessionCookie(token);
 
     return NextResponse.json({
-      user: { id: user.id, email: user.email, name: user.name, role: user.role },
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        name: user.name,
+        displayName: user.displayName || user.name,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
