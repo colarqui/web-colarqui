@@ -8,8 +8,14 @@
   }
   body {
     @apply bg-white text-gray-900 antialiased;
-    font-family: var(--font-didact-gothic), 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  @media (max-width: 768px) {
+    body {
+      font-family: var(--font-didact-gothic), 'Century Gothic', CenturyGothic, AppleGothic, sans-serif;
+    }
   }
 }
 
