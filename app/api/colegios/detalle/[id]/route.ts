@@ -65,12 +65,11 @@ export async function PUT(req: Request, { params }: Params) {
     testimoniosVideo: JSON.stringify(body.testimoniosVideo ?? []),
     galeria:          JSON.stringify(body.galeria          ?? []),
     costos:           JSON.stringify(body.costos           ?? []),
+    heroFondo:        String(body.heroFondo        ?? ""),
+    heroOverlay:      Number(body.heroOverlay       ?? 80),
+    heroOverlayColor: String(body.heroOverlayColor  ?? "#000000"),
+    heroContenedor:   String(body.heroContenedor   ?? ""),
   };
-
-  const heroFondo        = String(body.heroFondo        ?? "");
-  const heroOverlay      = Number(body.heroOverlay       ?? 80);
-  const heroOverlayColor = String(body.heroOverlayColor  ?? "#000000");
-  const heroContenedor   = String(body.heroContenedor   ?? "");
 
   try {
     const row = await prisma.colegioDetalle.upsert({
@@ -78,16 +77,6 @@ export async function PUT(req: Request, { params }: Params) {
       create: { colegioSlug: colegio.slug, ...standardData },
       update: standardData,
     });
-
-    await prisma.$executeRaw`
-      UPDATE "ColegioDetalle"
-      SET "heroFondo"        = ${heroFondo},
-          "heroOverlay"      = ${heroOverlay},
-          "heroOverlayColor" = ${heroOverlayColor},
-          "heroContenedor"   = ${heroContenedor},
-          "updatedAt"        = ${new Date().toISOString()}
-      WHERE "colegioSlug" = ${colegio.slug}
-    `;
 
     return NextResponse.json({ ok: true, id: row.id });
   } catch (err: any) {
