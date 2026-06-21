@@ -131,3 +131,43 @@ model SaraMessage {
   source         String?           // "local" | "crm"
   createdAt      DateTime          @default(now())
 }
+
+model Modal {
+  id            String   @id @default(cuid())
+  title         String
+  content       String   @default("")
+  imageUrl      String?
+  badge         String?
+  ctaText       String?
+  ctaUrl        String?
+  pageUrl       String   @default("*") // "*" = all pages, or specific path like "/colegios"
+  startDate     DateTime?
+  endDate       DateTime?
+  trigger       String   @default("immediate") // immediate, delay, scroll, exit_intent
+  delaySeconds  Int      @default(0)
+  scrollPercent Int      @default(0)
+  isActive      Boolean  @default(true)
+  showOnce      Boolean  @default(true)
+  position      String   @default("center") // center, bottom_right
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model HomeConfig {
+  id            String   @id @default(cuid())
+  heroSlides    String   @default("[]") // JSON: [{imageUrl,videoUrl?,badge,title,copy,ctaText,ctaUrl,alignment}]
+  stats         String   @default("[]") // JSON: [{icon,label,value,suffix,isText,text}]
+  whyChoose     String   @default("[]") // JSON: [{icon,title,description,color,iconClass}]
+  alliances     String   @default("[]") // JSON: [{logo,nombre,beneficio}]
+  testimonials  String   @default("[]") // JSON: [{nombre,colegio,texto,iniciales}]
+  faq           String   @default("[]") // JSON: [{icon,pregunta,respuesta,link?}]
+  ctaTitle      String   @default("¿Listo para dar el primer paso?")
+  ctaCopy       String   @default("Únete a nuestra comunidad de más de 29,000 estudiantes. Tu hijo merece la mejor educación.")
+  ctaPrimary    String   @default("/admisiones")
+  ctaPrimaryLabel String @default("Ver proceso de admisión")
+  ctaSecondary    String   @default("https://runachay.com")
+  ctaSecondaryLabel String @default("Inscribir en Runachay")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

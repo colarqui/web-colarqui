@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { School, Users, Award, Calendar } from "lucide-react";
+import { getHomeIcon } from "@/lib/home-icons";
 
 interface CounterStat {
   end: number;
@@ -15,12 +16,25 @@ interface CounterStat {
   formatNumber?: boolean;
 }
 
-const stats: CounterStat[] = [
+const defaultStats: CounterStat[] = [
   { end: 31, start: 0, step: 1, suffix: "", label: "Colegios", icon: School, formatNumber: false },
   { end: 29500, start: 10000, step: 1000, suffix: "+", label: "Estudiantes", icon: Users, formatNumber: true },
   { end: 0, start: 0, step: 0, suffix: "", label: "Categoría ICFES", icon: Award, isText: true, text: "A+" },
   { end: 65, start: 0, step: 1, suffix: "", label: "Años de historia", icon: Calendar, formatNumber: false },
 ];
+
+interface DynamicStat {
+  icon: string;
+  label: string;
+  value: number;
+  suffix: string;
+  isText: boolean;
+  text?: string;
+}
+
+interface StatsCounterProps {
+  dynamicStats?: DynamicStat[];
+}
 
 function useCounterAnimation(start: number, end: number, step: number, isVisible: boolean, duration: number = 5000) {
   const [value, setValue] = useState(start);
@@ -47,7 +61,22 @@ function useCounterAnimation(start: number, end: number, step: number, isVisible
   return value;
 }
 
-export default function StatsCounter() {
+function resolvedStats(dynamicStats?: DynamicStat[]): CounterStat[] {
+  if (!dynamicStats || dynamicStats.length === 0) return defaultStats;
+  return dynamicStats.map((s) => ({
+    end: s.isText ? 0 : s.value,
+    start: s.isText ? 0 : 0,
+    step: s.isText ? 0 : Math.max(1, Math.ceil(s.value / 50)),
+    suffix: s.suffix || "",
+    label: s.label,
+    icon: getHomeIcon(s.icon),
+    isText: s.isText,
+    text: s.text,
+    formatNumber: !s.isText && s.value >= 1000,
+  }));
+}
+
+export default function StatsCounter({ dynamicStats }: StatsCounterProps) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -70,7 +99,7 @@ export default function StatsCounter() {
     <section className="bg-gray-50 border-y border-gray-100" ref={sectionRef}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
+          {resolvedStats(dynamicStats).map((stat, index) => (
             <StatItem key={index} stat={stat} isVisible={isVisible} />
           ))}
         </div>

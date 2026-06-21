@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Newspaper, School, FileText, LogOut, Users, UserCircle, MessageCircle } from "lucide-react";
+import { LayoutDashboard, Newspaper, School, FileText, LogOut, Users, UserCircle, MessageCircle, Layers, Home } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 type PermisosModulo = { crear?: boolean; editar?: boolean; publicar?: boolean; eliminar?: boolean };
@@ -70,6 +70,12 @@ export default function AdminShell({
                 )}
                 {session?.role === "admin" && (
                   <NavLink href="/admin/sara-chat" pathname={pathname} icon={<MessageCircle className="h-4 w-4" />} label="Sara Chat" />
+                )}
+                {session?.role === "admin" && (
+                  <NavLink href="/admin/modales" pathname={pathname} icon={<Layers className="h-4 w-4" />} label="Modales" />
+                )}
+                {session?.role === "admin" && (
+                  <NavLink href="/admin/home" pathname={pathname} icon={<Home className="h-4 w-4" />} label="Editor Home" />
                 )}
               </>
             );

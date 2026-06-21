@@ -5,7 +5,9 @@ import Footer from "@/components/Footer";
 import ChatIA from "@/components/ChatIA";
 import NoticiasDestacadas from "@/components/NoticiasDestacadas";
 import StatsCounter from "@/components/StatsCounter";
+import DynamicModals from "@/components/DynamicModals";
 import { getColegios } from "@/lib/models";
+import { getHomeConfig } from "@/lib/home-config";
 import { 
   GraduationCap, 
   MapPin, 
@@ -31,7 +33,10 @@ import {
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
-  const colegios = await getColegios();
+  const [colegios, homeConfig] = await Promise.all([
+    getColegios(),
+    getHomeConfig(),
+  ]);
   const slugsDestacados = ["santa-isabel-ciudad-2000", "san-francisco-javier", "nuestra-senora-chiquinquira"];
   let colegiosDestacados = slugsDestacados
     .map((slug) => colegios.find((c) => c.slug === slug))
@@ -134,7 +139,7 @@ export default async function Home() {
         </section>
 
         {/* Stats Bar - Contadores animados */}
-        <StatsCounter />
+        <StatsCounter dynamicStats={homeConfig?.stats?.length ? homeConfig.stats : undefined} />
 
         {/* Features Grid - Estilo Charla */}
         <section className="py-24 bg-white" style={{ fontFamily: "'Century Gothic', Arial, sans-serif" }}>
@@ -540,6 +545,7 @@ export default async function Home() {
       </main>
 
       <Footer />
+      <DynamicModals />
     </div>
   );
 }
