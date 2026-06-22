@@ -30,15 +30,15 @@ const FESIH: Fundacion2025 = {
   directorNombre: "Raúl Darío Céspedes Loaiza",
   directorFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/foto_director.webp",
 
-  resenaHistorica: "La Fundación Educativa Santa Isabel de Hungría fue fundada por la Arquidiócesis de Cali como resultado de una iniciativa visionaria liderada por Monseñor Juan Francisco Sarasti Jaramillo. Su constitución se llevó a cabo mediante el Decreto Arzobispal No. 142, emitido el 23 de diciembre de 2004. Desde su creación en 2004, la Fundación ha transformado vidas, convirtiéndose en una pieza fundamental en el panorama educativo de la ciudad de Cali.",
-  resenaFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/horizonte1_institucional.png",
+  resenaHistorica: "",
+  resenaFoto: "",
   decretoArzobispal: "No. 142",
   nit: "800.256.881-3",
   anioCreacion: 2004,
 
   mision: "Las Fundaciones Educativas Santa Isabel de Hungría y Alberto Uribe Urdaneta pertenecen a la Arquidiócesis de Cali. Son organizaciones que administran las instituciones educativas propias o confiadas a su cuidado y gestionan con efectividad los recursos, especialmente los del talento humano, bajo los principios de la Iglesia católica en su misión social de educar.",
   vision: "Ser reconocidos a nivel territorial por gestionar una oferta educativa diversa, de calidad y sostenible a lo largo del tiempo para aportar en la transformación social.",
-  horizonteFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/horizonte1_institucional.png",
+  horizonteFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/03/IMG_3733-1.webp",
 
   valores: [
     { nombre: "Liderazgo", descripcion: "Destaca la humanidad en las Fundaciones Educativas: servir a otros con los dones divinos." },
@@ -74,7 +74,7 @@ const FESIH: Fundacion2025 = {
   indigenas: 392,
   noSeIdentifica: 6514,
 
-  rendicionFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/rendicion_cuentas-1.png",
+  rendicionFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/rendicion_cuentas22.png",
   ingresosDetalle: [
     { label: "Contratación Estatal", monto: 57402057673, color: "#D4A843" },
     { label: "Servicios Educativos", monto: 6142477598, color: "#E8A838" },

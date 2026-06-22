@@ -227,11 +227,11 @@ export default function Informe2025Page() {
               </div>
               <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
                 <div className="text-center mb-2">
-                  <div className="w-14 h-14 rounded-2xl bg-brand-gold/10 flex items-center justify-center mx-auto mb-3">
-                    <Building2 className="h-7 w-7 text-brand-gold" />
+                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-3 ring-4 ring-brand-gold/20">
+                    <Image src={data.directorFoto || ""} alt={data.directorNombre || "Director"} width={160} height={160} className="w-full h-full object-cover" />
                   </div>
-                  <p className="font-bold text-brand-dark text-sm leading-tight">{data.nombre}</p>
-                  <p className="text-xs text-gray-500 mt-1">NIT: {data.nit}</p>
+                  <p className="font-bold text-brand-dark text-sm leading-tight">{data.directorNombre}</p>
+                  <p className="text-xs text-gray-500 mt-1">Director Ejecutivo</p>
                 </div>
                 <div className="mt-6 space-y-3">
                   <div className="bg-white rounded-xl p-4 border border-gray-100 text-center">
