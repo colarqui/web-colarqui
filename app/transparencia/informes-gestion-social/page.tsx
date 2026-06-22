@@ -13,7 +13,7 @@ type Reporte = { anio: number; estado: "disponible" | "externo" | "proximamente"
 
 const REPORTES: Record<string, Reporte[]> = {
   FESIH: [
-    { anio: 2025, estado: "proximamente", desc: "Informe en elaboración. Próximamente disponible." },
+    { anio: 2025, estado: "disponible", desc: "Impacto educativo y social durante el año 2025.", href: "/transparencia/informes-gestion-social/2025/fesih" },
     { anio: 2024, estado: "disponible", desc: "Impacto educativo y social durante el año 2024.", href: "/transparencia/informes-gestion-social/2024/fesih" },
     { anio: 2023, estado: "disponible", desc: "Reinversión de recursos y actividades meritorias del año 2023.", href: "/transparencia/informes-gestion-social/2023/fesih" },
     { anio: 2022, estado: "disponible", desc: "Transparencia fiscal y gestión educativa del año 2022.", href: "/transparencia/informes-gestion-social/2022/fesih" },
@@ -24,7 +24,7 @@ const REPORTES: Record<string, Reporte[]> = {
     { anio: 2017, estado: "disponible", desc: "Primer informe de gestión social correspondiente al año 2017.", href: "/transparencia/informes-gestion-social/FESIH/2017" },
   ],
   FAUU: [
-    { anio: 2025, estado: "proximamente", desc: "Informe en elaboración. Próximamente disponible." },
+    { anio: 2025, estado: "disponible", desc: "Impacto educativo y social durante el año 2025.", href: "/transparencia/informes-gestion-social/2025/fauu" },
     { anio: 2024, estado: "disponible", desc: "Impacto educativo y social durante el año 2024.", href: "/transparencia/informes-gestion-social/2024/fauu" },
     { anio: 2023, estado: "disponible", desc: "Reinversión de recursos y actividades meritorias del año 2023.", href: "/transparencia/informes-gestion-social/2023/fauu" },
     { anio: 2022, estado: "disponible", desc: "Transparencia fiscal y gestión educativa del año 2022.", href: "/transparencia/informes-gestion-social/2022/fauu" },
