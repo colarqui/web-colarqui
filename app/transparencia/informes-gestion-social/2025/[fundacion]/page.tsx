@@ -296,7 +296,7 @@ export default function Informe2025Page() {
                   )}
                 </div>
                 {data.horizonteFoto && (
-                  <div className="md:col-span-2 self-end">
+                  <div className="md:col-span-2 self-start">
                     <div className="rounded-2xl overflow-hidden border border-gray-100/50">
                       <Image src={data.horizonteFoto} alt="Horizonte institucional" width={500} height={280} className="w-full h-auto object-cover" />
                     </div>
@@ -380,44 +380,44 @@ export default function Informe2025Page() {
               {(data.afrodescendientes || data.mestizos || data.blancos || data.indigenas || data.otrosEtnia || data.noSeIdentifica) && (
                 <>
                   <p className="text-white/80 text-sm uppercase tracking-widest text-center mt-10 mb-4">De los cuales</p>
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-4xl mx-auto">
+                  <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
                     {data.mestizos !== undefined && data.mestizos > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[130px] flex-1 max-w-[180px]">
                         <Users className="h-6 w-6 text-emerald-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.mestizos} /></p>
                         <p className="text-emerald-300/80 text-sm font-medium">Mestizos</p>
                       </div>
                     )}
                     {data.blancos !== undefined && data.blancos > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[130px] flex-1 max-w-[180px]">
                         <Globe className="h-6 w-6 text-sky-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.blancos} /></p>
                         <p className="text-sky-300/80 text-sm font-medium">Blancos</p>
                       </div>
                     )}
                     {data.afrodescendientes !== undefined && data.afrodescendientes > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[170px] flex-[1.3] max-w-[240px]">
                         <Globe className="h-6 w-6 text-amber-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.afrodescendientes} /></p>
                         <p className="text-amber-300/80 text-sm font-medium">Afrodescendientes</p>
                       </div>
                     )}
                     {data.indigenas !== undefined && data.indigenas > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[130px] flex-1 max-w-[180px]">
                         <Sparkles className="h-6 w-6 text-purple-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.indigenas} /></p>
                         <p className="text-purple-300/80 text-sm font-medium">Indígenas</p>
                       </div>
                     )}
                     {data.otrosEtnia !== undefined && data.otrosEtnia > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[130px] flex-1 max-w-[180px]">
                         <Heart className="h-6 w-6 text-sky-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.otrosEtnia} /></p>
                         <p className="text-sky-300/80 text-sm font-medium">Otros</p>
                       </div>
                     )}
                     {data.noSeIdentifica !== undefined && data.noSeIdentifica > 0 && (
-                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10">
+                      <div className="bg-white/5 backdrop-blur rounded-xl p-4 text-center border border-white/10 min-w-[130px] flex-1 max-w-[180px]">
                         <Users className="h-6 w-6 text-gray-400 mx-auto mb-2" />
                         <p className="text-2xl font-bold text-white"><AnimatedCounter end={data.noSeIdentifica} /></p>
                         <p className="text-gray-300/80 text-sm font-medium">No se identifica</p>

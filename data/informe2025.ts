@@ -74,7 +74,7 @@ const FESIH: Fundacion2025 = {
   indigenas: 392,
   noSeIdentifica: 6514,
 
-  rendicionFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/rendicion_cuentas22.png",
+  rendicionFoto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/rendicion_cuentas22.webp",
   ingresosDetalle: [
     { label: "Contratación Estatal", monto: 57402057673, color: "#D4A843" },
     { label: "Servicios Educativos", monto: 6142477598, color: "#E8A838" },
