@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { Fraunces, Archivo, Inter } from "next/font/google";
+import { Newsreader, Archivo, Inter } from "next/font/google";
 
-const fraunces = Fraunces({
+// Display serif: Newsreader. Elegido por el carácter editorial/heritage de una
+// institución con 60+ años; sus itálicas sostienen el gesto de énfasis del hero.
+const display = Newsreader({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
-  variable: "--font-fraunces",
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -33,7 +35,7 @@ export default function RedisenoLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className={`${fraunces.variable} ${archivo.variable} ${inter.variable}`}>
+    <div className={`${display.variable} ${archivo.variable} ${inter.variable}`}>
       {children}
     </div>
   );
