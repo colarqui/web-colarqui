@@ -4,7 +4,7 @@
 // 29 puntos en Cali (oro) + 2 en Yumbo/Jamundí (coral). Pulso continuo
 // escalonado e interacción al pasar el cursor. Respeta prefers-reduced-motion.
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Punto = { x: number; y: number; nombre: string; zona: string; tipo: "cali" | "otro" };
 
@@ -44,7 +44,31 @@ const puntos: Punto[] = [
 
 export default function RedDeColegios() {
   const [activo, setActivo] = useState<number | null>(null);
+  const [dibujado, setDibujado] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const pt = activo !== null ? puntos[activo] : null;
+
+  // Entrada: dibuja las guias y revela los puntos al entrar en viewport.
+  useEffect(() => {
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReduced) {
+      setDibujado(true);
+      return;
+    }
+    const el = wrapRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setDibujado(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   // Ancho aproximado del tooltip según el texto más largo de las dos líneas.
   const tipWidth = pt
@@ -55,7 +79,7 @@ export default function RedDeColegios() {
   const tipY = pt ? (tipAbajo ? pt.y + 12 : pt.y - 46) : 0;
 
   return (
-    <div className="relative rounded-2xl border border-[#2a261f] bg-[#15120c] overflow-hidden">
+    <div ref={wrapRef} className="relative rounded-2xl border border-[#2a261f] bg-[#15120c] overflow-hidden">
       <style>{`
         @keyframes redPulso {
           0%   { r: 4.2px; opacity: 1; }
@@ -63,8 +87,14 @@ export default function RedDeColegios() {
           100% { r: 13px;  opacity: 0; }
         }
         .red-anillo { transform-box: fill-box; transform-origin: center; animation: redPulso 2.8s ease-out infinite; }
+        .red-guia { stroke-dasharray: 1; stroke-dashoffset: 1; pathLength: 1; transition: stroke-dashoffset 1.4s ease-out; }
+        .red-guia.dibujada { stroke-dashoffset: 0; }
+        .red-punto { transform-box: fill-box; transform-origin: center; transform: scale(0); transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+        .red-punto.visible { transform: scale(1); }
         @media (prefers-reduced-motion: reduce) {
           .red-anillo { animation: none; opacity: 0; }
+          .red-guia { transition: none; stroke-dashoffset: 0; }
+          .red-punto { transition: none; transform: scale(1); }
         }
       `}</style>
 
@@ -83,8 +113,10 @@ export default function RedDeColegios() {
       >
         <title>Red de 31 colegios arquidiocesanos</title>
 
-        {/* trazos guía suaves */}
+        {/* trazos guía suaves (se dibujan al entrar) */}
         <path
+          className={`red-guia ${dibujado ? "dibujada" : ""}`}
+          pathLength={1}
           d="M70 30 L60 90 L80 150 L75 230 M120 25 L110 110 L130 190 M175 40 L165 120 L185 215"
           stroke="#2c281f"
           strokeWidth="1"
@@ -97,14 +129,15 @@ export default function RedDeColegios() {
           return (
             <g
               key={i}
+              className={`red-punto ${dibujado ? "visible" : ""}`}
               onMouseEnter={() => setActivo(i)}
               onMouseLeave={() => setActivo((cur) => (cur === i ? null : cur))}
               onFocus={() => setActivo(i)}
               onBlur={() => setActivo((cur) => (cur === i ? null : cur))}
               tabIndex={0}
               role="button"
-              aria-label={`${p.nombre} — ${p.zona}`}
-              style={{ cursor: "pointer", outline: "none" }}
+              aria-label={`${p.nombre}, ${p.zona}`}
+              style={{ cursor: "pointer", outline: "none", transitionDelay: `${0.2 + i * 0.035}s` }}
             >
               {/* anillo de pulso */}
               <circle

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Newsreader, Archivo, Inter } from "next/font/google";
+import "./rediseno.css";
 
 // Display serif: Newsreader. Elegido por el carácter editorial/heritage de una
 // institución con 60+ años; sus itálicas sostienen el gesto de énfasis del hero.

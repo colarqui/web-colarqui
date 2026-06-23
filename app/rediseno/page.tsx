@@ -47,6 +47,7 @@ const niveles = [
 export default function RedisenoHome() {
   return (
     <div className="min-h-screen flex flex-col bg-[#FBF6EE] font-[var(--font-inter-redis)]">
+      <div className="rd-progress" aria-hidden="true" />
       <Header />
 
       <main className="flex-grow">
@@ -56,7 +57,7 @@ export default function RedisenoHome() {
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
               {/* Texto */}
               <div>
-                <div className="inline-flex items-center gap-3 mb-7">
+                <div className="rd-rise inline-flex items-center gap-3 mb-7" style={{ ["--rd-i" as any]: 0 }}>
                   <span className="h-px w-8 bg-brand-coral" />
                   <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#c0533f] font-[var(--font-inter-redis)]">
                     Una familia de 31 colegios · desde 1960
@@ -64,19 +65,22 @@ export default function RedisenoHome() {
                 </div>
 
                 <h1
-                  className="text-[2.6rem] sm:text-5xl lg:text-[3.6rem] leading-[1.04] text-brand-dark tracking-tight"
-                  style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+                  className="rd-rise text-[2.6rem] sm:text-5xl lg:text-[3.6rem] leading-[1.04] text-brand-dark tracking-tight"
+                  style={{ fontFamily: "var(--font-display)", fontWeight: 600, ["--rd-i" as any]: 1 }}
                 >
                   Donde tu hijo crece{" "}
                   <span className="italic text-brand-coral">acompañado</span>, no solo educado.
                 </h1>
 
-                <p className="mt-6 text-lg text-[#6a6358] max-w-xl leading-relaxed">
+                <p
+                  className="rd-rise mt-6 text-lg text-[#6a6358] max-w-xl leading-relaxed"
+                  style={{ ["--rd-i" as any]: 2 }}
+                >
                   Más de 60 años formando niños y jóvenes en Cali con cercanía, valores y
                   excelencia académica. Desde preescolar hasta 11.°, siempre cerca de tu casa.
                 </p>
 
-                <div className="mt-9 flex flex-col sm:flex-row gap-3">
+                <div className="rd-rise mt-9 flex flex-col sm:flex-row gap-3" style={{ ["--rd-i" as any]: 3 }}>
                   <Link
                     href="/colegios"
                     className="inline-flex items-center justify-center gap-2 bg-brand-dark text-white px-7 py-4 rounded-full font-semibold hover:bg-[#1f1b14] active:scale-[0.98] transition-all"
@@ -94,23 +98,25 @@ export default function RedisenoHome() {
               </div>
 
               {/* Collage de fotos */}
-              <div className="relative h-[340px] sm:h-[400px]">
-                <div
-                  className="absolute top-0 right-0 w-[74%] h-[68%] rounded-[24px] bg-brand-coral bg-cover bg-center shadow-xl"
-                  style={{ backgroundImage: "url('/images/estudiantes-hero.jpg')" }}
-                />
-                <div
-                  className="absolute bottom-0 left-0 w-[56%] h-[52%] rounded-[20px] bg-brand-dark bg-cover bg-center border-[6px] border-[#FBF6EE] shadow-lg"
-                  style={{ backgroundImage: "url('/images/estudiantes-cta-admisiones.jpg')" }}
-                />
-                <div className="absolute top-5 left-2 bg-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_rgba(18,16,11,0.12)]">
+              <div className="rd-rise relative h-[340px] sm:h-[400px]" style={{ ["--rd-i" as any]: 2 }}>
+                <div className="rd-parallax absolute inset-0">
                   <div
-                    className="text-3xl text-brand-dark leading-none"
-                    style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
-                  >
-                    29.000+
+                    className="absolute top-0 right-0 w-[74%] h-[68%] rounded-[24px] bg-brand-coral bg-cover bg-center shadow-xl"
+                    style={{ backgroundImage: "url('/images/estudiantes-hero.jpg')" }}
+                  />
+                  <div
+                    className="absolute bottom-0 left-0 w-[56%] h-[52%] rounded-[20px] bg-brand-dark bg-cover bg-center border-[6px] border-[#FBF6EE] shadow-lg"
+                    style={{ backgroundImage: "url('/images/estudiantes-cta-admisiones.jpg')" }}
+                  />
+                  <div className="absolute top-5 left-2 bg-white rounded-2xl px-5 py-3 shadow-[0_10px_30px_rgba(18,16,11,0.12)]">
+                    <div
+                      className="text-3xl text-brand-dark leading-none"
+                      style={{ fontFamily: "var(--font-display)", fontWeight: 700 }}
+                    >
+                      29.000+
+                    </div>
+                    <div className="text-xs text-[#8a8275] font-medium mt-1">estudiantes hoy</div>
                   </div>
-                  <div className="text-xs text-[#8a8275] font-medium mt-1">estudiantes hoy</div>
                 </div>
               </div>
             </div>
