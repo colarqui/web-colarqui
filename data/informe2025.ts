@@ -24,7 +24,7 @@ const FESIH: Fundacion2025 = {
   sigla: "FESIH",
   nombre: "Fundación Educativa Santa Isabel de Hungría",
   brandColor: "#C9A227",
-  heroImage: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2025/06/0000ec80-ac88-4685-9385-c1e1f059ae7f.webp",
+  heroImage: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2026/06/poblacion_vulnerable.webp",
 
   textoIntroductorio: TEXTO_INTRO_2025,
   directorNombre: "Raúl Darío Céspedes Loaiza",
