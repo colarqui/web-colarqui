@@ -116,11 +116,11 @@ const FESIH: Fundacion2025 = {
   salasDeSistemas: { titulo: "Salas de Sistemas", subtitulo: "Balance Institucional", foto: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2025/05/seccion-tecnologia1.webp", descripcion: "La adecuación y fortalecimiento de las salas de sistemas constituye una inversión estratégica para el mejoramiento de los ambientes de aprendizaje en los Colegios Arquidiocesanos. Estos espacios brindan a los estudiantes acceso a herramientas tecnológicas que enriquecen los procesos pedagógicos y favorecen el desarrollo de competencias digitales fundamentales para los retos del mundo actual. Durante el año 2025 las inversiones realizadas en las salas de sistemas reafirmaron el compromiso de la Fundación con la calidad educativa y la innovación, impulsando entornos de aprendizaje más modernos, inclusivos y preparados para responder a las necesidades de la formación integral de nuestros estudiantes.", monto: 91722305 },
 
   donantesDetalle: [
-    { nombre: "F. Solidaria Arquidiocesana", monto: 803171000 },
-    { nombre: "Aguablanca e.V Hilfe Kolumbianische Kinder", monto: 75169981 },
-    { nombre: "Fundación José Gers", monto: 35073000 },
-    { nombre: "Datecsa S.A.", monto: 4120024 },
-    { nombre: "Bouharb Agencia de Seguros", monto: 924000 },
+    { nombre: "F. Solidaria Arquidiocesana", monto: 803171000, logo: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2024/06/logosolidaria@2x-1024x263.webp" },
+    { nombre: "Aguablanca e.V Hilfe Kolumbianische Kinder", monto: 75169981, logo: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2024/06/Logo-Aguablanca_rgb-1024x341.webp" },
+    { nombre: "Fundación José Gers", monto: 35073000, logo: "https://web-colarqui.vercel.app/images/logo_fundacion_ger.png" },
+    { nombre: "Datecsa S.A.", monto: 4120024, logo: "https://www.datecsa.com/hubfs/Logos/Logo%20Datecsa%20148x46%20PNG.png" },
+    { nombre: "Bouharb Agencia de Seguros", monto: 924000, logo: "https://bouharbseguros.com/wp-content/uploads/2021/09/Diseno-sin-titulo-6.png" },
   ],
   alianzasEstrategicas: [],
   pdfs: [] as { nombre: string; href: string }[],
