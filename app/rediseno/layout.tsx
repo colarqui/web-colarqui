@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Newsreader, Archivo, Inter } from "next/font/google";
+import { Newsreader, Jost, Inter } from "next/font/google";
 import "./rediseno.css";
 
 // Display serif: Newsreader. Elegido por el carácter editorial/heritage de una
@@ -12,10 +12,13 @@ const display = Newsreader({
   display: "swap",
 });
 
-const archivo = Archivo({
+// Civic/data sans: Jost. Geométrica tipo Futura/Century Gothic, alineada con la
+// marca (Century Gothic / Helvetica). Da peso institucional sin la dureza de una
+// grotesca condensada.
+const civic = Jost({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
-  variable: "--font-archivo",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-civic",
   display: "swap",
 });
 
@@ -36,7 +39,7 @@ export default function RedisenoLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className={`${display.variable} ${archivo.variable} ${inter.variable}`}>
+    <div className={`${display.variable} ${civic.variable} ${inter.variable}`}>
       {children}
     </div>
   );

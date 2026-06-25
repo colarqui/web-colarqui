@@ -242,13 +242,13 @@ export default function RedisenoHome() {
               <div>
                 <span
                   className="text-[11px] tracking-[0.2em] uppercase text-brand-gold"
-                  style={{ fontFamily: "var(--font-archivo)", fontWeight: 700 }}
+                  style={{ fontFamily: "var(--font-civic)", fontWeight: 600 }}
                 >
                   La Red · Valle del Cauca
                 </span>
                 <h2
-                  className="mt-4 text-4xl md:text-5xl uppercase leading-[0.98] tracking-tight"
-                  style={{ fontFamily: "var(--font-archivo)", fontWeight: 800 }}
+                  className="mt-4 text-4xl md:text-5xl uppercase leading-[1.04] tracking-[0.01em]"
+                  style={{ fontFamily: "var(--font-civic)", fontWeight: 600 }}
                 >
                   Una sola red.
                   <br />
@@ -272,7 +272,7 @@ export default function RedisenoHome() {
                       <CountUp
                         end={s.end}
                         suffix={s.suffix}
-                        className={`block text-3xl leading-none font-[var(--font-archivo)] font-extrabold ${s.c}`}
+                        className={`block text-3xl leading-none font-[var(--font-civic)] font-bold ${s.c}`}
                       />
                       <div className="text-[11px] text-[#8a8275] font-medium mt-2">{s.l}</div>
                     </div>

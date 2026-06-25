@@ -104,7 +104,7 @@ export default function RedDeColegios() {
 
       <div
         className="absolute top-3 left-4 text-[10px] tracking-[0.18em] uppercase text-[#6f685b] z-10"
-        style={{ fontFamily: "var(--font-archivo)" }}
+        style={{ fontFamily: "var(--font-civic)" }}
       >
         Cali · Yumbo · Jamundí
       </div>
@@ -187,7 +187,7 @@ export default function RedDeColegios() {
               x={tipX + 11}
               y={tipY + 15}
               fill="#12100B"
-              style={{ fontFamily: "var(--font-archivo)", fontWeight: 700, fontSize: "9.5px" }}
+              style={{ fontFamily: "var(--font-civic)", fontWeight: 700, fontSize: "9.5px" }}
             >
               {pt.nombre}
             </text>
