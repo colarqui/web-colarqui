@@ -205,9 +205,9 @@ const FAUU: Fundacion2025 = {
   impactoPastoralActividadesAnterior: 0,
   donantesDetalle: [
     { nombre: "F. Solidaria Arquidiocesana", monto: 600000000, logo: "https://colegiosarquidiocesanos.edu.co/inicio/wp-content/uploads/2024/06/logosolidaria@2x-1024x263.webp" },
-    { nombre: "Fundación Social Creafam Solidaria", monto: 16666667 },
+    { nombre: "Fundación Social Creafam Solidaria", monto: 16666667, logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjrjHD4cXEmJdSJvgD9wbv7o8fpUXWJ9V_FKKfECkRTA&s=10" },
     { nombre: "Mary Lucy Casas Figueroa", monto: 5100000 },
-    { nombre: "Objetivo Consultora Latinoamérica S.A.S.", monto: 600000 },
+    { nombre: "Objetivo Consultora Latinoamérica S.A.S.", monto: 600000, logo: "https://ocl-la.com/wp-content/uploads/2021/03/LOGO-OCL-2.png" },
   ],
   alianzasEstrategicas: [],
   pdfs: [] as { nombre: string; href: string }[],
