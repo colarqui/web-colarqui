@@ -4,7 +4,7 @@
 // grilla de tarjetas. Datos estáticos (data/colegios). Línea gráfica nueva.
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Search, MapPin, Users, School, X } from "lucide-react";
+import { Search, MapPin, Users, School, X, ChevronDown } from "lucide-react";
 import type { Colegio } from "@/data/colegios";
 
 const calendarios = ["Todos", "A", "B"] as const;
@@ -38,47 +38,55 @@ export default function ColegiosListR({ colegios }: { colegios: Colegio[] }) {
     setCal("Todos");
   };
 
-  const chip = (activo: boolean) =>
-    `px-4 py-2 rounded-full text-sm font-medium border transition-colors ${
-      activo
-        ? "bg-brand-dark text-white border-brand-dark"
-        : "bg-white text-[#6a6358] border-[#e4dccf] hover:border-brand-coral/50 hover:text-brand-dark"
-    }`;
-
   return (
     <section className="bg-[#FBF6EE]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        {/* Buscador */}
-        <div className="relative max-w-md mb-6">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8a8275]" aria-hidden="true" />
-          <input
-            type="search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Buscar por nombre o zona…"
-            aria-label="Buscar colegio"
-            className="w-full pl-12 pr-4 h-12 rounded-full bg-white border border-[#e4dccf] text-brand-dark placeholder:text-[#8a8275] focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
-          />
-        </div>
+        {/* Barra de filtros compacta: buscador + zona (dropdown) + calendario (segmentado) */}
+        <div className="flex flex-col md:flex-row md:items-center gap-3">
+          <div className="relative flex-1 md:max-w-sm">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#8a8275]" aria-hidden="true" />
+            <input
+              type="search"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Buscar por nombre o zona…"
+              aria-label="Buscar colegio"
+              className="w-full pl-12 pr-4 h-12 rounded-full bg-white border border-[#e4dccf] text-brand-dark placeholder:text-[#8a8275] focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+            />
+          </div>
 
-        {/* Chips de calendario */}
-        <div className="flex flex-wrap items-center gap-2 mb-3">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#b06b5e] mr-1">Calendario</span>
-          {calendarios.map((c) => (
-            <button key={c} onClick={() => setCal(c)} className={chip(cal === c)}>
-              {c === "Todos" ? "Todos" : `Calendario ${c}`}
-            </button>
-          ))}
-        </div>
+          <div className="flex flex-col sm:flex-row gap-3 md:ml-auto">
+            {/* Zona: dropdown (12 opciones -> control compacto) */}
+            <div className="relative">
+              <select
+                value={zona}
+                onChange={(e) => setZona(e.target.value)}
+                aria-label="Filtrar por zona"
+                className="appearance-none w-full sm:w-56 h-12 pl-4 pr-10 rounded-full bg-white border border-[#e4dccf] text-sm text-brand-dark cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-gold/50 focus:border-brand-gold"
+              >
+                {zonas.map((z) => (
+                  <option key={z} value={z}>{z === "Todas" ? "Todas las zonas" : z}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8a8275] pointer-events-none" aria-hidden="true" />
+            </div>
 
-        {/* Chips de zona */}
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-[#b06b5e] mr-1">Zona</span>
-          {zonas.map((z) => (
-            <button key={z} onClick={() => setZona(z)} className={chip(zona === z)}>
-              {z === "Todas" ? "Todas" : z}
-            </button>
-          ))}
+            {/* Calendario: control segmentado (3 opciones) */}
+            <div role="group" aria-label="Filtrar por calendario" className="inline-flex h-12 items-center rounded-full border border-[#e4dccf] bg-white p-1 self-start sm:self-auto">
+              {calendarios.map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setCal(c)}
+                  aria-pressed={cal === c}
+                  className={`h-10 px-4 rounded-full text-sm font-medium transition-colors ${
+                    cal === c ? "bg-brand-dark text-white" : "text-[#6a6358] hover:text-brand-dark"
+                  }`}
+                >
+                  {c === "Todos" ? "Todos" : `Cal. ${c}`}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Conteo + limpiar */}
