@@ -15,6 +15,7 @@ import {
 import RedDeColegios from "./RedDeColegios";
 import Reveal from "./Reveal";
 import CountUp from "./CountUp";
+import SaraFlotante from "./SaraFlotante";
 
 export const dynamic = "force-static";
 
@@ -587,6 +588,7 @@ export default function RedisenoHome() {
       </main>
 
       <Footer />
+      <SaraFlotante />
     </div>
   );
 }
