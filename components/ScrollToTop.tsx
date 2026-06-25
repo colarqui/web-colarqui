@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ChevronUp } from "lucide-react";
 
 function InstagramIcon() {
@@ -22,6 +23,10 @@ function FacebookIcon() {
 }
 
 export default function ScrollToTop() {
+  const pathname = usePathname();
+  // En el rediseño: solo "volver arriba" (las redes viven en el footer; se evita
+  // sobrecarga de elementos flotantes). El resto del sitio conserva los accesos.
+  const soloVolverArriba = pathname?.startsWith("/rediseno") ?? false;
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -36,24 +41,28 @@ export default function ScrollToTop() {
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3">
-      <a
-        href="https://www.instagram.com/colegios.arquidiocesanos/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Instagram"
-        className="bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
-      >
-        <InstagramIcon />
-      </a>
-      <a
-        href="https://www.facebook.com/col.arquidiocesanos/"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Facebook"
-        className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-      >
-        <FacebookIcon />
-      </a>
+      {!soloVolverArriba && (
+        <a
+          href="https://www.instagram.com/colegios.arquidiocesanos/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Instagram"
+          className="bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-offset-2"
+        >
+          <InstagramIcon />
+        </a>
+      )}
+      {!soloVolverArriba && (
+        <a
+          href="https://www.facebook.com/col.arquidiocesanos/"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Facebook"
+          className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:scale-110 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
+        >
+          <FacebookIcon />
+        </a>
+      )}
       {visible && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
