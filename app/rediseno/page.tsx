@@ -9,6 +9,8 @@ import {
   GraduationCap,
   BookOpen,
   Users,
+  Quote,
+  Calendar,
 } from "lucide-react";
 import RedDeColegios from "./RedDeColegios";
 import Reveal from "./Reveal";
@@ -42,6 +44,74 @@ const niveles = [
   { rango: "1.° a 5.°", nombre: "Básica Primaria", edad: "6 a 10 años", icon: BookOpen },
   { rango: "6.° a 9.°", nombre: "Básica Secundaria", edad: "11 a 14 años", icon: Users },
   { rango: "10.° y 11.°", nombre: "Educación Media", edad: "15 a 17 años", icon: GraduationCap },
+];
+
+const aliados = [
+  {
+    nombre: "Unicatólica",
+    logo: "/logos/logo-unicatólica.png",
+    beneficio: "Admisión preferencial, ferias vocacionales y visitas a campus para estudiantes de 10.° y 11.°",
+  },
+  {
+    nombre: "Universidad Santiago de Cali",
+    logo: "/logos/logo-usaca.png",
+    beneficio: "Descuentos en matrícula universitaria y programas de orientación profesional.",
+  },
+  {
+    nombre: "American English School",
+    logo: "/logos/logo-aes.png",
+    beneficio: "Inglés certificado internacionalmente con metodología de inmersión desde preescolar.",
+  },
+  {
+    nombre: "Arquidiócesis de Cali",
+    logo: "/logos/logo-arquidiocesis.png",
+    beneficio: "Respaldo pastoral y acompañamiento espiritual permanente a toda la comunidad.",
+  },
+];
+
+const testimonios = [
+  {
+    texto: "Encontramos maestros que de verdad se preocupan por formar buenas personas. Mi hijo ha crecido en valores y en confianza.",
+    nombre: "Carolina Martínez",
+    colegio: "Colegio San Francisco Javier",
+    iniciales: "CM",
+  },
+  {
+    texto: "Lo que más valoro es el acompañamiento pastoral. La formación espiritual complementa la academia como en ningún otro colegio de Cali.",
+    nombre: "Andrés Felipe López",
+    colegio: "Colegio Santa Isabel de Hungría",
+    iniciales: "AL",
+  },
+  {
+    texto: "Mis dos hijas llevan seis años aquí. La calidad humana de los profesores ha sido clave en su desarrollo integral.",
+    nombre: "María José Rodríguez",
+    colegio: "Colegio Nuestra Señora de Guadalupe",
+    iniciales: "MR",
+  },
+];
+
+const noticias = [
+  {
+    slug: "resultados-icfes-2024",
+    titulo: "Nuestros colegios destacan en los resultados ICFES 2024",
+    categoria: "Académico",
+    fecha: "15 nov 2024",
+    imagen: "/images/estudiantes-hero-noticias.jpg",
+  },
+  {
+    slug: "dia-familia-2024",
+    titulo: "Celebramos el Día de la Familia Arquidiocesana",
+    categoria: "Comunidad",
+    fecha: "20 oct 2024",
+    imagen: "/images/estudiantes-cta-noticias.jpg",
+  },
+  {
+    slug: "olimpiadas-matematicas",
+    titulo: "Estudiantes ganan las Olimpiadas Matemáticas Regionales",
+    categoria: "Académico",
+    fecha: "15 sep 2024",
+    imagen: "/images/estudiantes-cta-colegios.jpg",
+  },
 ];
 
 export default function RedisenoHome() {
@@ -310,6 +380,174 @@ export default function RedisenoHome() {
                   </Link>
                 </Reveal>
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================== ALIANZAS ===================== */}
+        <section className="bg-[#FBF6EE] border-t border-[#efe6d7]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="max-w-2xl mb-12">
+              <h2
+                className="text-3xl md:text-4xl text-brand-dark leading-tight"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+              >
+                Aliados que abren <span className="italic text-brand-coral">puertas</span> para tu hijo
+              </h2>
+              <p className="mt-4 text-[#6a6358] leading-relaxed">
+                Convenios con universidades, institutos de idiomas y la Arquidiócesis que extienden la
+                formación más allá del aula.
+              </p>
+            </div>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {aliados.map((a, i) => (
+                <Reveal key={i} delay={i * 80}>
+                  <div className="group h-full bg-white rounded-2xl p-7 border border-[#efe6d7] hover:border-brand-gold/40 hover:-translate-y-1 transition-all duration-300">
+                    <div className="h-16 flex items-center mb-5">
+                      <img
+                        src={a.logo}
+                        alt={`Logo ${a.nombre}`}
+                        loading="lazy"
+                        className="max-h-14 max-w-[150px] w-auto object-contain grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300"
+                      />
+                    </div>
+                    <h3
+                      className="text-lg text-brand-dark"
+                      style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+                    >
+                      {a.nombre}
+                    </h3>
+                    <p className="mt-2 text-sm text-[#7a7367] leading-relaxed">{a.beneficio}</p>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================== TESTIMONIOS ===================== */}
+        <section className="bg-white border-t border-[#efe6d7]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="max-w-2xl mb-12">
+              <h2
+                className="text-3xl md:text-4xl text-brand-dark leading-tight"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+              >
+                Lo que dicen los <span className="italic text-brand-coral">padres de familia</span>
+              </h2>
+              <p className="mt-4 text-[#6a6358] leading-relaxed">
+                Quienes ya hacen parte de nuestra comunidad comparten su experiencia.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-3 gap-7">
+              {testimonios.map((t, i) => (
+                <Reveal key={i} delay={i * 90}>
+                  <figure className="h-full bg-[#FBF6EE] rounded-2xl p-7 border border-[#efe6d7] flex flex-col">
+                    <Quote className="h-8 w-8 text-brand-coral/40 flex-none" aria-hidden="true" />
+                    <blockquote
+                      className="mt-4 flex-1 text-lg text-brand-dark leading-relaxed italic"
+                      style={{ fontFamily: "var(--font-display)", fontWeight: 400 }}
+                    >
+                      &ldquo;{t.texto}&rdquo;
+                    </blockquote>
+                    <figcaption className="mt-6 pt-5 border-t border-[#e4dccf] flex items-center gap-3">
+                      <span className="w-11 h-11 rounded-full bg-brand-dark text-white flex items-center justify-center text-sm font-semibold flex-none">
+                        {t.iniciales}
+                      </span>
+                      <span>
+                        <span className="block font-semibold text-brand-dark text-sm">{t.nombre}</span>
+                        <span className="block text-xs text-[#8a8275]">Familia · {t.colegio}</span>
+                      </span>
+                    </figcaption>
+                  </figure>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===================== ÚLTIMAS NOTICIAS ===================== */}
+        <section className="bg-[#FBF6EE] border-t border-[#efe6d7]">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-12">
+              <h2
+                className="text-3xl md:text-4xl text-brand-dark leading-tight"
+                style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+              >
+                Últimas <span className="italic text-brand-coral">noticias</span>
+              </h2>
+              <Link
+                href="/noticias"
+                className="inline-flex items-center gap-2 text-brand-dark font-semibold hover:text-brand-coral transition-colors"
+              >
+                Ver todas las noticias
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Destacada */}
+              <Reveal>
+                <Link href={`/noticias/${noticias[0].slug}`} className="group block h-full">
+                  <div className="relative aspect-[16/10] rounded-2xl overflow-hidden bg-brand-dark">
+                    <img
+                      src={noticias[0].imagen}
+                      alt={noticias[0].titulo}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-brand-gold text-brand-dark text-xs font-bold rounded-full">
+                      {noticias[0].categoria}
+                    </span>
+                  </div>
+                  <div className="mt-5">
+                    <div className="flex items-center gap-2 text-xs text-[#8a8275] mb-2">
+                      <Calendar className="h-3.5 w-3.5" />
+                      {noticias[0].fecha}
+                    </div>
+                    <h3
+                      className="text-2xl text-brand-dark leading-snug group-hover:text-brand-coral transition-colors"
+                      style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+                    >
+                      {noticias[0].titulo}
+                    </h3>
+                  </div>
+                </Link>
+              </Reveal>
+
+              {/* Lista */}
+              <div className="flex flex-col gap-5">
+                {noticias.slice(1).map((n, i) => (
+                  <Reveal key={n.slug} delay={i * 90}>
+                    <Link
+                      href={`/noticias/${n.slug}`}
+                      className="group flex gap-5 bg-white rounded-2xl p-4 border border-[#efe6d7] hover:border-brand-coral/40 hover:-translate-y-0.5 transition-all duration-300"
+                    >
+                      <div className="relative w-32 sm:w-40 flex-none aspect-[4/3] rounded-xl overflow-hidden bg-brand-dark">
+                        <img
+                          src={n.imagen}
+                          alt={n.titulo}
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="flex flex-col justify-center min-w-0">
+                        <div className="flex items-center gap-2 text-xs text-[#8a8275] mb-1.5">
+                          <span className="text-brand-coral-dark font-semibold">{n.categoria}</span>
+                          <span aria-hidden="true">·</span>
+                          {n.fecha}
+                        </div>
+                        <h3
+                          className="text-lg text-brand-dark leading-snug group-hover:text-brand-coral transition-colors"
+                          style={{ fontFamily: "var(--font-display)", fontWeight: 600 }}
+                        >
+                          {n.titulo}
+                        </h3>
+                      </div>
+                    </Link>
+                  </Reveal>
+                ))}
+              </div>
             </div>
           </div>
         </section>
