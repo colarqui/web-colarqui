@@ -145,9 +145,9 @@ export default function ColegiosListR({ colegios }: { colegios: Colegio[] }) {
                   >
                     {c.nombre}
                   </h3>
-                  <div className="flex items-center gap-2 text-[#8a8275] text-sm mt-2">
-                    <MapPin className="h-4 w-4 flex-none" />
-                    {c.zona}
+                  <div className="flex items-start gap-2 text-[#8a8275] text-sm mt-2">
+                    <MapPin className="h-4 w-4 flex-none mt-0.5" />
+                    <span className="line-clamp-2">{c.direccion}</span>
                   </div>
                   {c.estudiantes > 0 && (
                     <div className="flex items-center gap-2 text-[#8a8275] text-xs mt-3 pt-3 border-t border-[#efe6d7]">
