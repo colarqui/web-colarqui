@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import {
   ArrowRight,
   MapPin,
@@ -15,7 +13,6 @@ import {
 import RedDeColegios from "./RedDeColegios";
 import Reveal from "./Reveal";
 import CountUp from "./CountUp";
-import SaraFlotante from "./SaraFlotante";
 
 export const dynamic = "force-static";
 
@@ -117,12 +114,8 @@ const noticias = [
 
 export default function RedisenoHome() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#FBF6EE] font-[var(--font-inter-redis)]">
-      <div className="rd-progress" aria-hidden="true" />
-      <Header />
-
-      <main className="flex-grow">
-        {/* ===================== HERO CÁLIDO ===================== */}
+    <>
+      {/* ===================== HERO CÁLIDO ===================== */}
         <section className="bg-[#FBF6EE] overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -585,10 +578,6 @@ export default function RedisenoHome() {
             </div>
           </div>
         </section>
-      </main>
-
-      <Footer />
-      <SaraFlotante />
-    </div>
+    </>
   );
 }

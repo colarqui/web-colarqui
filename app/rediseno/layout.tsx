@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Newsreader, Jost, Inter } from "next/font/google";
 import "./rediseno.css";
+import HeaderR from "./_shell/HeaderR";
+import FooterR from "./_shell/FooterR";
+import SaraFlotante from "./SaraFlotante";
 
 // Display serif: Newsreader. Elegido por el carácter editorial/heritage de una
 // institución con 60+ años; sus itálicas sostienen el gesto de énfasis del hero.
@@ -40,7 +43,13 @@ export default function RedisenoLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <div className={`${display.variable} ${civic.variable} ${inter.variable}`}>
-      {children}
+      <div className="min-h-screen flex flex-col bg-[#FBF6EE] font-[var(--font-inter-redis)]">
+        <div className="rd-progress" aria-hidden="true" />
+        <HeaderR />
+        <main className="flex-grow">{children}</main>
+        <FooterR />
+        <SaraFlotante />
+      </div>
     </div>
   );
 }
