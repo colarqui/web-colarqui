@@ -1,6 +1,7 @@
 "use client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import { useState } from "react";
 import { MessageSquare, FileText, AlertTriangle, Megaphone, Heart, ArrowRight, HelpCircle, User, FileDigit, Phone, Mail, Building2, Tag, Users, AlignLeft, Upload, FileCheck, X, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
 
@@ -79,16 +80,13 @@ export default function PQRSFPage() {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
       <main className="flex-grow">
-        <section className="relative overflow-hidden text-white py-24">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div className="absolute inset-0 opacity-40" style={{ backgroundImage: `url('/images/estudiantes-hero-pqrsf.jpg')`, backgroundSize: "cover", backgroundPosition: "center" }} />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-          <div className="relative max-w-7xl mx-auto px-4 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6"><HelpCircle className="h-4 w-4" /> Atención a la Comunidad</div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Buzón <span className="text-brand-gold">PQRSF</span></h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">¿Tienes algo que compartir con nosotros? ¡Queremos conocer tu opinión! Únete a nuestra comunidad, para nosotros tus comentarios son muy valiosos. ¡Crezcamos juntos!</p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Atención a la comunidad"
+          imagen="/images/estudiantes-hero-pqrsf.jpg"
+          subtitulo="¿Tienes algo que compartir con nosotros? Queremos conocer tu opinión. Tus comentarios son muy valiosos para crecer juntos."
+        >
+          Buzón <span className="italic text-brand-gold">PQRSF</span>
+        </PageHero>
 
         <section className="py-20 bg-white">
           <div className="max-w-6xl mx-auto px-4">

@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import Image from "next/image";
 import { useState, useRef } from "react";
 import {
@@ -246,33 +247,25 @@ export default function ComiteConvivenciaPage() {
       <main className="flex-grow">
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
-        <section className="relative text-white overflow-hidden">
-          <div className="absolute inset-0">
-            <Image src="/images/hero-comite.jpg" alt="" fill className="object-cover object-center" aria-hidden="true" />
-            <div className="absolute inset-0 bg-brand-dark/70" />
-          </div>
-
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-            <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 rounded-full px-4 py-2 mb-8">
-              <Scale className="h-4 w-4 text-blue-300" />
-              <span className="text-blue-200 text-sm font-medium">Res. 0652 de 2012 · Ministerio del Trabajo</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Comité de Convivencia Laboral</h1>
-            <p className="text-gray-500 text-lg mb-10 max-w-2xl mx-auto">
-              Órgano de control que canaliza con objetividad y transparencia las quejas relacionadas con conductas de acoso laboral en nuestras fundaciones educativas.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#formulario-queja" className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-brand-gold/90 text-brand-dark px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105">
+        <PageHero
+          eyebrow="Resolución 0652 de 2012"
+          imagen="/images/hero-comite.jpg"
+          subtitulo="Órgano de control que canaliza con objetividad y transparencia las quejas relacionadas con conductas de acoso laboral en nuestras fundaciones educativas."
+          acciones={
+            <>
+              <a href="#formulario-queja" className="inline-flex items-center justify-center gap-2 bg-brand-gold hover:bg-[#ffc94d] text-brand-dark px-7 py-4 rounded-full font-semibold transition-all active:scale-[0.98]">
                 <AlertTriangle className="h-5 w-5" />
-                Presentar una Queja
+                Presentar una queja
               </a>
-              <a href="#miembros" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold transition-all">
+              <a href="#miembros" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-7 py-4 rounded-full font-semibold transition-all active:scale-[0.98]">
                 <Users className="h-5 w-5" />
-                Ver Miembros del Comité
+                Ver miembros del comité
               </a>
-            </div>
-          </div>
-        </section>
+            </>
+          }
+        >
+          Comité de <span className="italic text-brand-gold">convivencia laboral</span>
+        </PageHero>
 
         {/* ── ¿Qué es el CCL? ───────────────────────────────────────────────── */}
         <section className="py-20 bg-gray-50">

@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import {
   Heart,
   Users,
@@ -49,31 +50,13 @@ export default function PastoralPage() {
 
       <main className="flex-grow">
         {/* Hero */}
-        <section className="relative overflow-hidden text-white py-24">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-40"
-            style={{
-              backgroundImage: `url('/images/estudiantes-hero-pastoral.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6">
-              <Heart className="h-4 w-4" />
-              Formación Integral
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Pastoral <span className="text-brand-gold">Educativa</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Valor agregado transversal a todas las áreas de nuestras instituciones educativas.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Quiénes somos"
+          imagen="/images/estudiantes-hero-pastoral.jpg"
+          subtitulo="Valor agregado transversal a todas las áreas de nuestras instituciones educativas."
+        >
+          Pastoral <span className="italic text-brand-gold">educativa</span>
+        </PageHero>
 
         {/* Misión */}
         <section className="py-20 bg-white">

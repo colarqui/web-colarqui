@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import {
   Target,
   Eye,
@@ -38,27 +39,13 @@ export default function HorizontePage() {
 
       <main className="flex-grow">
         {/* Hero */}
-        <section className="relative overflow-hidden text-white py-24">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-40"
-            style={{
-              backgroundImage: `url('/images/estudiantes-hero-horizonte.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">
-              Horizonte <span className="text-brand-gold">Institucional</span>
-            </h1>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Conoce los pilares que guían nuestra labor educativa en las Fundaciones Santa Isabel de Hungría y Alberto Uribe Urdaneta.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Quiénes somos"
+          imagen="/images/estudiantes-hero-horizonte.jpg"
+          subtitulo="Conoce los pilares que guían nuestra labor educativa en las Fundaciones Santa Isabel de Hungría y Alberto Uribe Urdaneta."
+        >
+          Horizonte <span className="italic text-brand-gold">institucional</span>
+        </PageHero>
 
         {/* Misión + Visión */}
         <section className="py-20 bg-white">

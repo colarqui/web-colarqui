@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import NoticiasList from "./NoticiasList";
 import { getNoticias } from "@/lib/models";
 
@@ -13,29 +14,13 @@ export default async function NoticiasPage() {
       <Header />
 
       <main className="flex-grow">
-        <section className="relative overflow-hidden text-white py-20">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage: `url('/images/estudiantes-hero-noticias.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Noticias <span className="text-brand-gold">Arquidiocesanas</span>
-              </h1>
-              <p className="text-xl text-gray-300">
-                Mantente informado sobre las actividades, logros y eventos de nuestra red educativa.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Comunidad"
+          imagen="/images/estudiantes-hero-noticias.jpg"
+          subtitulo="Mantente informado sobre las actividades, logros y eventos de nuestra red educativa."
+        >
+          Noticias <span className="italic text-brand-gold">arquidiocesanas</span>
+        </PageHero>
 
         <NoticiasList noticias={noticias} />
 

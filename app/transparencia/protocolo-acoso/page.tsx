@@ -2,6 +2,7 @@
 
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import { useState, useRef } from "react";
 import {
   AlertTriangle, Shield, Scale, Heart, BookOpen,
@@ -223,44 +224,28 @@ export default function ProtocoloAcosoPage() {
       <main className="flex-grow">
 
         {/* ── Hero ──────────────────────────────────────────────────────────── */}
-        <section className="relative bg-brand-dark text-white overflow-hidden">
-          {/* Imagen de fondo — coloca el archivo en /public/images/hero-acoso.jpg */}
-          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/hero-acoso.jpg')" }} />
-          {/* Overlay oscuro + degradado rojo para legibilidad */}
-          <div className="absolute inset-0 bg-brand-dark/75" />
-          <div className="absolute inset-0 bg-gradient-to-br from-red-900/50 via-brand-dark/40 to-brand-dark/80" />
-          <div className="absolute inset-0 opacity-5" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "40px 40px" }} />
-          <div className="absolute top-0 right-0 w-96 h-96 bg-red-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-
-          <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-            <div className="inline-flex items-center gap-2 bg-red-500/20 border border-red-400/30 rounded-full px-4 py-2 mb-8">
-              <Shield className="h-4 w-4 text-red-300" />
-              <span className="text-red-200 text-sm font-medium">Protocolo de Prevención y Atención</span>
-            </div>
-
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Acoso Sexual Laboral</h1>
-            <p className="text-gray-300 text-lg mb-12 max-w-2xl mx-auto">
-              Este espacio es seguro y confidencial. Conoce tus derechos, identifica conductas inapropiadas y reporta tu caso.
-            </p>
-
-            {/* Counter */}
-            <div className="inline-block bg-white/5 border border-white/10 rounded-3xl px-16 py-10 mb-10">
-              <p className="text-sm font-medium text-white/60 uppercase tracking-widest mb-2">Casos de Acoso Sexual</p>
-              <div className="text-7xl md:text-8xl font-bold text-white mb-2">0</div>
-              <p className="text-white/60 text-sm">Número de casos presentados en el último semestre</p>
-            </div>
-
-            <div>
+        <PageHero
+          eyebrow="Protocolo de prevención y atención"
+          imagen="/images/hero-acoso.jpg"
+          subtitulo="Este espacio es seguro y confidencial. Conoce tus derechos, identifica conductas inapropiadas y reporta tu caso."
+          acciones={
+            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+              <div className="inline-flex items-center gap-4 bg-white/5 border border-white/10 rounded-2xl px-6 py-4">
+                <span className="text-5xl font-bold text-white leading-none" style={{ fontFamily: "var(--font-civic)" }}>0</span>
+                <span className="text-white/60 text-xs leading-snug max-w-[10rem]">Casos de acoso sexual presentados en el último semestre</span>
+              </div>
               <a
                 href="#formulario-denuncia"
-                className="inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-400 text-white px-8 py-4 rounded-xl font-semibold transition-all hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 bg-red-500 hover:bg-red-400 text-white px-7 py-4 rounded-full font-semibold transition-all active:scale-[0.98]"
               >
                 <AlertTriangle className="h-5 w-5" />
-                Reportar Caso de Acoso Sexual
+                Reportar caso de acoso sexual
               </a>
             </div>
-          </div>
-        </section>
+          }
+        >
+          Acoso sexual laboral
+        </PageHero>
 
         {/* ── Conductas inapropiadas ────────────────────────────────────────── */}
         <section className="py-20 bg-gray-50">

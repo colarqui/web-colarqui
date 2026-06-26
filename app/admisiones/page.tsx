@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import RequisitosSection from "./RequisitosSection";
 import { 
   Calendar, 
@@ -65,53 +66,33 @@ export default function AdmisionesPage() {
 
       <main className="flex-grow">
         {/* Hero */}
-        <section className="relative overflow-hidden text-white py-20">
-          <div className="absolute inset-0 bg-brand-dark" />
-          {/* Background Image */}
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage: `url('/images/estudiantes-hero-admisiones.jpg')`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6">
-                <School className="h-4 w-4" />
-                Año Escolar 2026
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Proceso de <span className="text-brand-gold">Admisión</span>
-              </h1>
-              <p className="text-xl text-gray-300 mb-8">
-                Únete a nuestra familia arquidiocesana. Un proceso sencillo, transparente y cercano para asegurar la mejor educación para tu hijo.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a
-                  href="https://runachay.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-dark px-8 py-4 rounded-xl font-bold hover:bg-brand-gold/90 transition-colors"
-                >
-                  Iniciar inscripción
-                  <ExternalLink className="h-5 w-5" />
-                </a>
-                <Link
-                  href="/colegios"
-                  className="inline-flex items-center justify-center gap-2 bg-white/10 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-colors"
-                >
-                  Conocer colegios
-                  <ArrowRight className="h-5 w-5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Admisiones · Año escolar 2026"
+          imagen="/images/estudiantes-hero-admisiones.jpg"
+          subtitulo="Únete a nuestra familia arquidiocesana. Un proceso sencillo, transparente y cercano para asegurar la mejor educación para tu hijo."
+          acciones={
+            <>
+              <a
+                href="https://runachay.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-brand-gold text-brand-dark px-7 py-4 rounded-full font-semibold hover:bg-[#ffc94d] active:scale-[0.98] transition-all"
+              >
+                Iniciar inscripción
+                <ExternalLink className="h-5 w-5" />
+              </a>
+              <Link
+                href="/colegios"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 text-white border border-white/20 px-7 py-4 rounded-full font-semibold hover:bg-white/20 active:scale-[0.98] transition-all"
+              >
+                Conocer colegios
+                <ArrowRight className="h-5 w-5" />
+              </Link>
+            </>
+          }
+        >
+          Proceso de <span className="italic text-brand-gold">admisión</span>
+        </PageHero>
 
         {/* Steps */}
         <section className="py-20 bg-gray-50">
