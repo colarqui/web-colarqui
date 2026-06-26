@@ -3,7 +3,7 @@ import { Newsreader, Jost, Inter } from "next/font/google";
 import "./rediseno.css";
 import HeaderR from "./_shell/HeaderR";
 import FooterR from "./_shell/FooterR";
-import SaraFlotante from "./SaraFlotante";
+import SaraFlotante from "@/components/SaraFlotante";
 
 // Display serif: Newsreader. Elegido por el carácter editorial/heritage de una
 // institución con 60+ años; sus itálicas sostienen el gesto de énfasis del hero.

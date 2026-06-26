@@ -10,9 +10,9 @@ import {
   Quote,
   Calendar,
 } from "lucide-react";
-import RedDeColegios from "./RedDeColegios";
-import Reveal from "./Reveal";
-import CountUp from "./CountUp";
+import RedDeColegios from "@/components/RedDeColegios";
+import Reveal from "@/components/Reveal";
+import CountUp from "@/components/CountUp";
 
 export const dynamic = "force-static";
 

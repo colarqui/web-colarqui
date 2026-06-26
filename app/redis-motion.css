@@ -1,0 +1,53 @@
+/* Motion del home rediseñado. Todo gateado por prefers-reduced-motion.
+   Usa scroll-driven animations nativas (sin listeners de scroll, sin JS). */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* ---- Barra de progreso de scroll (wayfinding, no decorativa) ---- */
+  .rd-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #FBB823;
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    z-index: 60;
+    animation: rdProgress linear both;
+    animation-timeline: scroll(root);
+  }
+  @keyframes rdProgress {
+    to { transform: scaleX(1); }
+  }
+
+  /* ---- Coreografia de entrada del hero (al cargar) ---- */
+  .rd-rise {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: rdRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--rd-i, 0) * 0.09s);
+  }
+  @keyframes rdRise {
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---- Parallax sutil del collage del hero ---- */
+  .rd-parallax {
+    animation: rdParallax linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+  @keyframes rdParallax {
+    from { transform: translateY(28px); }
+    to { transform: translateY(-28px); }
+  }
+}
+
+@supports not (animation-timeline: scroll()) {
+  .rd-rise { opacity: 1; transform: none; }
+  .rd-progress { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rd-rise { opacity: 1; transform: none; }
+  .rd-progress { display: none; }
+}

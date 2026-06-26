@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Didact_Gothic } from "next/font/google";
 import "./globals.css";
+import "./redis-motion.css";
+import { fontDisplay, fontCivic, fontBody } from "./fonts";
 import ScrollToTop from "@/components/ScrollToTop";
 
 const didactGothic = Didact_Gothic({
@@ -25,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${didactGothic.variable} antialiased`}>
+      <body className={`${didactGothic.variable} ${fontDisplay.variable} ${fontCivic.variable} ${fontBody.variable} antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:bg-brand-gold focus:text-brand-dark focus:px-4 focus:py-2 focus:rounded-xl focus:font-semibold"
