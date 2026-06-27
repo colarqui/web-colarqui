@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { 
+import PageHero from "@/components/PageHero";
+import {
   FileText, 
   Scale, 
   Users, 
@@ -61,22 +62,13 @@ export default function TransparenciaPage() {
 
       <main className="flex-grow">
         {/* Hero */}
-        <section className="bg-gradient-to-br from-brand-dark via-brand-dark to-[#1a1610] text-white py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6">
-                <Shield className="h-4 w-4" />
-                Gestión transparente
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                <span className="text-brand-gold">Transparencia</span> y Rendición de Cuentas
-              </h1>
-              <p className="text-xl text-gray-300">
-                Comprometidos con la apertura institucional, la honestidad y el servicio responsable a la comunidad educativa.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Gestión transparente"
+          imagen="https://colegiosarquidiocesanos.edu.co/informegestion2022/wp-content/uploads/2023/03/IMG_1352-scaled-1.webp"
+          subtitulo="Comprometidos con la apertura institucional, la honestidad y el servicio responsable a la comunidad educativa."
+        >
+          Transparencia y <span className="italic text-brand-gold">rendición de cuentas</span>
+        </PageHero>
 
         {/* Stats */}
         <section className="bg-brand-gold py-12">

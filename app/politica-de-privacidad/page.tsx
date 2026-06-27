@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import {
   Building2,
   CheckCircle,
@@ -82,34 +83,13 @@ export default function PoliticaDePrivacidadPage() {
       <Header />
 
       <main className="flex-grow">
-        <section className="relative overflow-hidden text-white py-20">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage: `url('/images/hero-privacidad.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center 30%",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6">
-                <ShieldCheck className="h-4 w-4" />
-                Protección de datos personales
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Política de <span className="text-brand-gold">Privacidad</span>
-              </h1>
-              <p className="text-xl text-gray-300 leading-relaxed">
-                Aviso de privacidad para el tratamiento de información personal en las fundaciones educativas
-                administradoras de los Colegios Arquidiocesanos.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Protección de datos personales"
+          imagen="/images/hero-privacidad.jpg"
+          subtitulo="Aviso de privacidad para el tratamiento de información personal en las fundaciones educativas administradoras de los Colegios Arquidiocesanos."
+        >
+          Política de <span className="italic text-brand-gold">privacidad</span>
+        </PageHero>
 
         <section className="bg-brand-gold py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

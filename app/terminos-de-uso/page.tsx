@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import {
   CheckCircle,
   ExternalLink,
@@ -75,35 +76,13 @@ export default function TerminosDeUsoPage() {
       <Header />
 
       <main className="flex-grow">
-        <section className="relative overflow-hidden text-white py-20">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-50"
-            style={{
-              backgroundImage: `url('/images/hero-terminos.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-
-          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-brand-gold/20 text-brand-gold rounded-full text-sm font-medium mb-6">
-                <ShieldCheck className="h-4 w-4" />
-                Espacio seguro y respetuoso
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Términos de <span className="text-brand-gold">Uso</span>
-              </h1>
-              <p className="text-xl text-gray-300 leading-relaxed">
-                ¡Te damos la bienvenida al sitio web de nuestros Colegios Arquidiocesanos! Al navegar por esta página,
-                aceptas estas reglas básicas diseñadas para mantener un espacio seguro, respetuoso y útil para toda
-                nuestra comunidad educativa.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Espacio seguro y respetuoso"
+          imagen="/images/hero-terminos.jpg"
+          subtitulo="Te damos la bienvenida al sitio web de nuestros Colegios Arquidiocesanos. Al navegar por esta página, aceptas estas reglas básicas diseñadas para mantener un espacio seguro, respetuoso y útil para toda nuestra comunidad educativa."
+        >
+          Términos de <span className="italic text-brand-gold">uso</span>
+        </PageHero>
 
         <section className="bg-brand-gold py-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

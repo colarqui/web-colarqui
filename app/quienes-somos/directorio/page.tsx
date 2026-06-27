@@ -1,6 +1,7 @@
 "use client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import PageHero from "@/components/PageHero";
 import { Phone, Building2, Search, Smartphone } from "lucide-react";
 import { useState } from "react";
 
@@ -64,23 +65,13 @@ export default function DirectorioPage() {
       <Header />
       <main className="flex-grow">
         {/* Hero */}
-        <section className="relative overflow-hidden text-white py-24">
-          <div className="absolute inset-0 bg-brand-dark" />
-          <div
-            className="absolute inset-0 opacity-40"
-            style={{
-              backgroundImage: `url('/images/colaborador-hero-directorio.jpg')`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="absolute inset-0 bg-brand-dark/70" />
-          <div className="relative max-w-7xl mx-auto px-4 text-center">
-            <Phone className="h-8 w-8 text-brand-gold mx-auto mb-4" />
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Directorio <span className="text-brand-gold">Telefónico</span></h1>
-            <p className="text-xl text-gray-300 max-w-2xl mx-auto">Comunícate con nuestras instituciones educativas y la Unidad Administrativa.</p>
-          </div>
-        </section>
+        <PageHero
+          eyebrow="Contacto"
+          imagen="/images/colaborador-hero-directorio.jpg"
+          subtitulo="Comunícate con nuestras instituciones educativas y la Unidad Administrativa."
+        >
+          Directorio <span className="italic text-brand-gold">telefónico</span>
+        </PageHero>
 
         {/* PBX */}
         <section className="py-16 bg-white">
