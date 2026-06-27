@@ -8,6 +8,7 @@ type Msg = { role: "user" | "assistant"; content: string };
 
 const SENDER_ID_KEY = "sara_sender_id";
 const USER_DATA_KEY = "sara_user_data";
+const SESSION_ID_KEY = "sara_session_id";
 
 function getOrCreateSenderId(): string {
   if (typeof window === "undefined") return "";
@@ -31,6 +32,10 @@ function getStoredUserData(): { name: string; email: string; phone: string } {
 function saveUserData(data: { name: string; email: string; phone: string }) {
   if (typeof window === "undefined") return;
   localStorage.setItem(USER_DATA_KEY, JSON.stringify(data));
+}
+
+function isUserDataComplete(data: { name: string; email: string; phone: string }): boolean {
+  return data.name.trim().length > 0 && data.phone.trim().length > 0;
 }
 
 // Lightweight markdown renderer: bold, URLs, line breaks
@@ -94,10 +99,15 @@ export default function ChatIA() {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showEscalateButton, setShowEscalateButton] = useState(false);
   const [userData, setUserData] = useState(() => getStoredUserData());
+  // Formulario de registro previo al chat
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [registerData, setRegisterData] = useState({ name: "", email: "", phone: "" });
+  const [crmSessionId, setCrmSessionId] = useState<string | null>(null);
+  const lastAgentCheckRef = useRef<string>(new Date(0).toISOString());
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const senderId = useRef<string>("");
 
-  // Restore history from localStorage
+  // Restore history and session from localStorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
@@ -110,6 +120,8 @@ export default function ChatIA() {
     } catch {
       // ignore corrupt storage
     }
+    const storedSession = localStorage.getItem(SESSION_ID_KEY);
+    if (storedSession) setCrmSessionId(storedSession);
   }, []);
 
   // Persist history (skip welcome message)
@@ -121,6 +133,36 @@ export default function ChatIA() {
       // ignore quota errors
     }
   }, [messages]);
+
+  // Mostrar formulario de registro cuando se abre el chat sin datos
+  useEffect(() => {
+    if (isOpen && !isUserDataComplete(userData)) {
+      setShowRegisterForm(true);
+    }
+  }, [isOpen]);
+
+  // Polling de mensajes del asesor cada 4 segundos
+  useEffect(() => {
+    if (!crmSessionId) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(
+          `/api/sara/agent-messages?sessionId=${crmSessionId}&since=${encodeURIComponent(lastAgentCheckRef.current)}`
+        );
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data.messages?.length) {
+          const agentMsgs: Msg[] = data.messages.map((m: { content: string; createdAt: string }) => ({
+            role: "assistant" as const,
+            content: `💬 *Asesor:* ${m.content}`,
+          }));
+          setMessages((prev) => [...prev, ...agentMsgs]);
+          lastAgentCheckRef.current = data.messages[data.messages.length - 1].createdAt;
+        }
+      } catch {}
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [crmSessionId]);
 
   // Auto-scroll within the messages container only
   useEffect(() => {
@@ -165,6 +207,28 @@ export default function ChatIA() {
       const replyText: string = data.reply || "";
       setShowEscalateButton(needsEscalation(replyText));
       setMessages((prev) => [...prev, { role: "assistant", content: replyText }]);
+
+      // Sincronizar intercambio al CRM (fire-and-forget)
+      fetch("/api/sara/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderId: senderId.current,
+          name: userData.name || undefined,
+          email: userData.email || undefined,
+          phone: userData.phone || undefined,
+          userMessage: trimmed,
+          botResponse: replyText,
+        }),
+      })
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.sessionId && !crmSessionId) {
+            setCrmSessionId(d.sessionId);
+            localStorage.setItem(SESSION_ID_KEY, d.sessionId);
+          }
+        })
+        .catch(() => {});
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Error de conexión";
       setError(msg);
@@ -250,8 +314,18 @@ export default function ChatIA() {
     handleEscalateToCRM();
   };
 
+  const handleRegisterSubmit = () => {
+    if (!registerData.name.trim() || !registerData.phone.trim()) return;
+    saveUserData(registerData);
+    setUserData(registerData);
+    if (!senderId.current) senderId.current = getOrCreateSenderId();
+    setShowRegisterForm(false);
+  };
+
   const handleClearHistory = () => {
     localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(SESSION_ID_KEY);
+    setCrmSessionId(null);
     setMessages([BIENVENIDA]);
   };
 
@@ -304,8 +378,46 @@ export default function ChatIA() {
             </div>
           </div>
 
+          {/* Formulario de registro inicial — obligatorio antes de chatear */}
+          {showRegisterForm && (
+            <div className="px-4 py-4 bg-white border-b border-gray-100 space-y-3">
+              <div className="text-center mb-1">
+                <p className="text-sm font-semibold text-slate-700">Para comenzar, cuéntanos quién eres</p>
+                <p className="text-xs text-slate-400 mt-0.5">Solo te pedimos lo esencial</p>
+              </div>
+              <input
+                type="text"
+                placeholder="Nombre completo *"
+                value={registerData.name}
+                onChange={(e) => setRegisterData((p) => ({ ...p, name: e.target.value }))}
+                className="w-full px-3 py-2 bg-gray-50 rounded-lg text-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
+              />
+              <input
+                type="tel"
+                placeholder="Teléfono / WhatsApp *"
+                value={registerData.phone}
+                onChange={(e) => setRegisterData((p) => ({ ...p, phone: e.target.value }))}
+                className="w-full px-3 py-2 bg-gray-50 rounded-lg text-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
+              />
+              <input
+                type="email"
+                placeholder="Correo electrónico (opcional)"
+                value={registerData.email}
+                onChange={(e) => setRegisterData((p) => ({ ...p, email: e.target.value }))}
+                className="w-full px-3 py-2 bg-gray-50 rounded-lg text-sm border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-gold/30"
+              />
+              <button
+                onClick={handleRegisterSubmit}
+                disabled={!registerData.name.trim() || !registerData.phone.trim()}
+                className="w-full py-2 bg-brand-dark text-white text-sm font-medium rounded-lg hover:bg-brand-dark/90 disabled:opacity-40 transition-colors"
+              >
+                Comenzar conversación
+              </button>
+            </div>
+          )}
+
           {/* Messages */}
-          <div ref={messagesContainerRef} className="h-[300px] overflow-y-auto p-4 space-y-3 bg-gray-50">
+          <div ref={messagesContainerRef} className={`overflow-y-auto p-4 space-y-3 bg-gray-50 ${showRegisterForm ? 'h-0 overflow-hidden' : 'h-[300px]'}`}>
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 <div
@@ -448,13 +560,13 @@ export default function ChatIA() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-                placeholder="Escribe tu pregunta..."
-                disabled={loading}
+                placeholder={showRegisterForm ? "Completa el formulario primero..." : "Escribe tu pregunta..."}
+                disabled={loading || showRegisterForm}
                 className="flex-1 px-4 py-2 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/20 text-gray-800 disabled:opacity-50"
               />
               <button
                 onClick={() => handleSend()}
-                disabled={loading || !input.trim()}
+                disabled={loading || !input.trim() || showRegisterForm}
                 aria-label={loading ? "Enviando..." : "Enviar mensaje"}
                 className="p-2 bg-brand-dark text-white rounded-xl hover:bg-brand-dark/90 transition-colors disabled:opacity-40 focus:outline-none focus:ring-2 focus:ring-brand-dark/50"
               >
