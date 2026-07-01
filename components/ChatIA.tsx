@@ -103,6 +103,7 @@ export default function ChatIA() {
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [registerData, setRegisterData] = useState({ name: "", email: "", phone: "" });
   const [crmSessionId, setCrmSessionId] = useState<string | null>(null);
+  const [agentMode, setAgentMode] = useState(false);
   const lastAgentCheckRef = useRef<string>(new Date(0).toISOString());
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const senderId = useRef<string>("");
@@ -158,6 +159,7 @@ export default function ChatIA() {
           }));
           setMessages((prev) => [...prev, ...agentMsgs]);
           lastAgentCheckRef.current = data.messages[data.messages.length - 1].createdAt;
+          setAgentMode(true);
         }
       } catch {}
     }, 4000);
@@ -186,6 +188,24 @@ export default function ChatIA() {
 
     try {
       if (!senderId.current) senderId.current = getOrCreateSenderId();
+
+      // Si hay asesor activo, enviar solo al CRM — Sara no responde
+      if (agentMode) {
+        fetch("/api/sara/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            senderId: senderId.current,
+            name: userData.name || undefined,
+            email: userData.email || undefined,
+            phone: userData.phone || undefined,
+            userMessage: trimmed,
+            botResponse: null,
+          }),
+        }).catch(() => {});
+        setLoading(false);
+        return;
+      }
 
       const history = newMessages.slice(1, -1);
       const res = await fetch("/api/sara", {
@@ -300,6 +320,8 @@ export default function ChatIA() {
         },
       ]);
       setShowContactForm(false);
+      setShowEscalateButton(false);
+      setAgentMode(true);
     } catch (e: unknown) {
       const msg = e instanceof Error ? e.message : "Error de conexión";
       setError(msg);
@@ -326,6 +348,8 @@ export default function ChatIA() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(SESSION_ID_KEY);
     setCrmSessionId(null);
+    setAgentMode(false);
+    setShowEscalateButton(false);
     setMessages([BIENVENIDA]);
   };
 
@@ -431,6 +455,15 @@ export default function ChatIA() {
                 </div>
               </div>
             ))}
+
+            {/* Banner: asesor conectado */}
+            {agentMode && (
+              <div className="flex justify-center">
+                <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
+                  ✓ Conectado con un asesor
+                </span>
+              </div>
+            )}
 
             {/* Escalation actions — shown only when Sara cannot answer */}
             {showEscalateButton && !loading && (
@@ -560,7 +593,7 @@ export default function ChatIA() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleSend()}
-                placeholder={showRegisterForm ? "Completa el formulario primero..." : "Escribe tu pregunta..."}
+                placeholder={showRegisterForm ? "Completa el formulario primero..." : agentMode ? "Escribe al asesor..." : "Escribe tu pregunta..."}
                 disabled={loading || showRegisterForm}
                 className="flex-1 px-4 py-2 bg-gray-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-gold/20 text-gray-800 disabled:opacity-50"
               />
